@@ -11,8 +11,6 @@ Open it directly in your browser:
 - `dist/piano-sight-reading.html` (distribution build)
 - `index.html` (source file, identical to the distribution build)
 
-On mobile, you can also use the copy already saved to your downloads folder:
-`/sdcard/Download/DSH-Go/piano-sight-reading.html`
 
 ## Contents
 
