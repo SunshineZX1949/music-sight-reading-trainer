@@ -1,30 +1,32 @@
-# 谱读 · 五线谱识谱练习
+[简体中文](README.md) | **English**
 
-单文件、离线可用的钢琴识谱练习网页。
+# SightRead · Piano Sight-Reading Practice
 
-## 使用
+A single-file, offline-ready piano sight-reading practice web page.
 
-直接用浏览器打开：
+## Usage
 
-- `dist/piano-sight-reading.html`（分发版）
-- `index.html`（源文件，内容与分发版一致）
+Open it directly in your browser:
 
-手机上也可以使用已复制到下载目录的副本：
+- `dist/piano-sight-reading.html` (distribution build)
+- `index.html` (source file, identical to the distribution build)
+
+On mobile, you can also use the copy already saved to your downloads folder:
 `/sdcard/Download/DSH-Go/piano-sight-reading.html`
 
-## 目录
+## Contents
 
-- `index.html` / `dist/piano-sight-reading.html` —— 自包含网页，字体已内嵌
-- `assets/music-subset.woff2`、`assets/music-subset.b64` —— 内嵌字体的源文件
-- `assets/LICENSE-NOTO-MUSIC.txt` —— Noto Music 字体许可
+- `index.html` / `dist/piano-sight-reading.html` — self-contained web page with the font embedded
+- `assets/music-subset.woff2`, `assets/music-subset.b64` — source files for the embedded font
+- `assets/LICENSE-NOTO-MUSIC.txt` — Noto Music font license
 
-## 功能
+## Features
 
-- 高音谱、低音谱、大谱表切换
-- 自由选择练习音区
-- 0–7 个升号的调号练习
-- 标准黑白高光钢琴键，支持横向滚动
-- 答错时以红色音符在谱表上标出错音，并高亮正确琴键
-- 当前、白色、黑色三种界面风格
-- 自动检查浏览器语言：中文浏览器显示中文，其他语言显示英文
-- 设置中可手动切换“自动 / 中文 / English”，选择会保存在本机
+- Switch between treble clef, bass clef, and grand staff
+- Freely choose the note range to practice
+- Key-signature practice with 0–7 sharps
+- Standard black-and-white highlighted piano keys with horizontal scrolling
+- On a wrong answer, the wrong note is marked in red on the staff and the correct key is highlighted
+- Three interface themes: Current, White, and Black
+- Automatically detects your browser language: Chinese browsers get Chinese, all others get English
+- Manually switch between “Auto / 中文 / English” in settings; your choice is saved locally
