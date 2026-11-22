@@ -1,3 +1,4 @@
+[简体中文](README.md) | [English](README.en-US.md)
 # 谱读 · 五线谱识谱练习
 
 单文件、离线可用的钢琴识谱练习网页。
