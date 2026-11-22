@@ -1,0 +1,2974 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="warm">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" id="themeColor" content="#f3eee4">
+<script>
+  try {
+    var savedTheme = localStorage.getItem("pianoread-theme");
+    if (savedTheme === "warm" || savedTheme === "white" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+    var langMode = localStorage.getItem("pianoread-language");
+    var detectedLang;
+    if (langMode === "zh" || langMode === "en") {
+      detectedLang = langMode;
+    } else {
+      var primary = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+      detectedLang = /^zh/i.test(primary) ? "zh" : "en";
+    }
+    document.documentElement.lang = detectedLang === "zh" ? "zh-CN" : "en";
+    document.documentElement.dataset.lang = detectedLang;
+  } catch (e) {}
+</script>
+<meta name="description" content="为钢琴初学者设计的五线谱识谱练习：自由选择音区、谱号、升号调号，在模拟钢琴上作答，按错时显示错音、正确音和正确琴键。">
+<title>谱读 · 五线谱识谱练习</title>
+<style>
+  /* Noto Music (subset): Copyright 2022 The Noto Project Authors, SIL OFL 1.1.
+     Full license is embedded at the end of this document. */
+  @font-face {
+    font-family: "Noto Music";
+    src: url(data:font/woff2;base64,d09GMgABAAAAAATMAA0AAAAAB/AAAAR6AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcQgZgAHgRCAqGJIU8ATYCJAMYCw4ABCAFg2YHIBuVBgCuCmxwT00T41hjsHlzl3IwHKB+Hr0gnvZr8/bvngkQ3SxBJAXSlYBHTxC6WrZmQ3nZFHIWLFLKKUDf4nd4nn9wAoYA8PC2e/9ogmZKUZouNAVT3K5rqhKJSUzywmK7OP//71S9WDR2nveBghiRNbrmP6COTWtZKNj5vKClxru9GpBYRbS6DbF4AV3Si1ML+NcIcIkUTcZme3fATgP+AwBGrFaL9Rp+yU6JB8prRIYq0z0lIo4eIWmJNKenhq3LwHFbp3xpAixQN6M3gA7+eZlRDVOAaozSRiulAZRaDACgZXKyAkf4hP9N/ksBwJbVOQgBqF7dgIjlABpYIBFo0IiJgEQWF2jELBZomiC5/A+5P75oAwwAPAAKAYCFULW0AICQTxZB9wSanoMh5I8fgC3TfS+kA9kAAOiWUDIumtV6HTpSOwRQbCoe7hk34ylX7T1wRHQfmxL2mj2U6u1lKJ7hrJkS92PmlEHDxVC44xXqoiVcjAQXLcy1ilAJC8WLq7kPLfIzutwg/ZCr1mOeClAonR6dk1y1VHvAvduju7/bga4aGth5tXufgSdOzi1jmM5QPCI7MCK6tj3Pp+ZFp49MatX1+QJnzR6FgmGfsb0lULSMaxdpB0XCGy/l2KsSz95PpbprNwmECCU+6/Ia5FA3h2rWsGtHQDuiKtbZ+eHtV/RqYpP0Y1Xd5yiidzCzdhoUTS1npgVnPez/g0qkXIU5DOmSII9f5rrw63lZ017D5pFFXukQH/+rG3inJyFHacIKox6TT4pSpQtB8ND4MfzTWcyeKd+p3C5nmLeRK8q9J7dmKnAqt/cxqgnXZMrfCIReFEUgShPmdt2/JFl+FhQnudsKhelY4eqsc5XQk+9UWAxmzLURMwfHHEdpY7G8AFcJAVVlR1d5NXUnvKK5orKTCtmejBUhcnZoWzj4WApkdXaOSkooebqoOKn4jQb5Eh2JjlmlXu5xasawm4w7GusjJX6LthbygaFTo5fxb+cxEm3w7fmrjWnD+xhtSZRHO30tlO5IDYhf8zExQ9LNbYUrI96HkErk5S1tSEog7xyPs7L4Z5NFLjfVw/iaqcGCUVaLL2Ic39lcTyHHbPgfXOIqScXCQEXPxC9JzcI+08QyxSZI3XPO3CnGdTAoQzf9VOw//9T2/15Lf3i0ytlc11RLEJ/+N7vfegfBre7NR4L7Lavjv5V/K0yCLQGAjYrU/0oE5kKQ1z0wEGG2NEpgyJMfwppY8OmSr8TypF3kCayGjk1YxOzGrZnaCYQAmCAihEDx2QRLqQPQEn2AMRiicbWJj1jMIJJkSxEjSrQ0kHy58uWLNShaBEg3RBoEpFcKRKwIYdJA6qRLEw2RIhUkNQ+mSeIQXTlyrIiBuitdKCULEAlga1kxEmL3p0kFW8UJqWICJFUzXZ4oXEWIki5eiBSqsuXKVaBCCydOrOjFLg8fRdqc3Q+aTU8RUvzniERQvUTsHZuRQqS/LFrMLfT7969Tka1Uc4X9JbIUWdSnziOdrsBEyP2jCgAAAA==) format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+  }
+
+  :root {
+    color-scheme: light;
+    --paper: #f3eee4;
+    --paper-deep: #e9e0d2;
+    --card: #fffdf8;
+    --ink: #24251f;
+    --ink-soft: #56584d;
+    --muted: #858376;
+    --line: #ddd4c5;
+    --line-soft: #e9e2d6;
+    --forest: #183f36;
+    --forest-2: #1e4c41;
+    --forest-3: #2c6154;
+    --terra: #b44d37;
+    --terra-soft: #f8e8e2;
+    --green: #2d7b5e;
+    --green-soft: #e7f3ec;
+    --gold: #b7832f;
+    --gold-soft: #fbf3df;
+    --white-key: #fbf8f0;
+    --white-key-2: #f0e9dc;
+    --black-key: #20241f;
+    --radius-lg: 26px;
+    --radius-md: 17px;
+    --shadow-card: 0 18px 50px rgba(55, 45, 28, 0.07), 0 2px 6px rgba(55, 45, 28, 0.04);
+    --sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+    --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 640px at 8% -12%, rgba(255, 252, 244, 0.92), transparent 60%),
+      radial-gradient(900px 600px at 104% 8%, rgba(207, 224, 208, 0.34), transparent 62%),
+      linear-gradient(145deg, #f5f0e7 0%, #efe8dc 52%, #f3ede3 100%);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.32;
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 55px, rgba(72, 65, 47, 0.035) 55px 56px);
+    mask-image: linear-gradient(to bottom, #000, transparent 64%);
+    z-index: -1;
+  }
+
+  button, select { font: inherit; }
+  button { color: inherit; }
+  button, select { -webkit-tap-highlight-color: transparent; }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid var(--terra);
+    outline-offset: 3px;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .music { font-family: "Noto Music", "Bravura", "Noto Sans Symbols 2", serif; font-weight: normal; }
+
+  .shell {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    padding: 22px clamp(14px, 3.5vw, 34px) 30px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-height: 58px;
+    margin-bottom: 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .brand-mark {
+    width: 48px; height: 48px;
+    flex: 0 0 auto;
+    display: grid; place-items: center;
+    border-radius: 15px;
+    color: #f8f2e5;
+    background:
+      radial-gradient(circle at 28% 20%, rgba(255,255,255,0.12), transparent 42%),
+      linear-gradient(150deg, #295b4d, #14352d);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 8px 18px rgba(31, 65, 53, 0.18);
+    font-family: "Noto Music", serif;
+    font-size: 30px;
+    line-height: 1;
+    padding-top: 6px;
+  }
+  .brand-copy { display: flex; flex-direction: column; gap: 1px; }
+  .brand-copy strong {
+    font-family: var(--serif);
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.12;
+  }
+  .top-spacer { flex: 1; }
+  .stats {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    padding: 5px;
+    background: rgba(255, 253, 248, 0.6);
+    border: 1px solid rgba(219, 210, 196, 0.8);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+  }
+  .stat {
+    min-width: 68px;
+    text-align: center;
+    padding: 3px 10px 4px;
+    border-radius: 11px;
+  }
+  .stat + .stat { border-left: 1px solid rgba(218, 209, 194, 0.7); }
+  .stat b {
+    display: block;
+    font-size: 17px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    color: var(--forest);
+  }
+  .stat span {
+    display: block;
+    margin-top: 1px;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .top-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 41px; height: 41px;
+    display: grid; place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: rgba(255, 253, 248, 0.72);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+  }
+  .icon-btn:hover { background: #fffdf8; color: var(--forest); border-color: #cbbfab; }
+  .icon-btn:active { transform: translateY(1px); }
+  .icon-btn[aria-pressed="false"] { color: #a39b8c; }
+  .icon-btn svg { width: 19px; height: 19px; display: block; }
+
+  /* ---------- controls ---------- */
+  .control-deck {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    padding: 11px 13px;
+    margin-bottom: 14px;
+    background: rgba(255, 253, 248, 0.74);
+    border: 1px solid rgba(220, 211, 196, 0.88);
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(58, 48, 30, 0.035);
+    backdrop-filter: blur(10px);
+  }
+  .control-block {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+  .segmented {
+    display: inline-flex;
+    padding: 3px;
+    gap: 2px;
+    border-radius: 12px;
+    background: #eee7db;
+    border: 1px solid #e2d8c8;
+  }
+  .segmented button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 31px;
+    padding: 0 11px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #6f7064;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  }
+  .segmented button .clef-glyph { font-family: "Noto Music", serif; font-size: 18px; line-height: 1; padding-top: 3px; }
+  .segmented button:hover { color: var(--forest); }
+  .segmented button.active {
+    background: #fffdf8;
+    color: var(--forest);
+    box-shadow: 0 2px 7px rgba(47, 54, 42, 0.12);
+  }
+  .segmented button .double-clef {
+    font-family: "Noto Music", serif;
+    font-size: 13.5px;
+    line-height: 1;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    padding-top: 1px;
+  }
+  .segmented button .double-clef > span {
+    display: block;
+    line-height: 1;
+  }
+  .segmented button .double-clef > span + span {
+    transform: translateY(1px);
+  }
+
+  .select-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 5px; height: 5px;
+    border-right: 1.5px solid #817b6e;
+    border-bottom: 1.5px solid #817b6e;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    height: 37px;
+    min-width: 70px;
+    padding: 0 27px 0 10px;
+    border: 1px solid #ddd3c2;
+    border-radius: 10px;
+    background: #fffcf5;
+    color: var(--ink);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .select-wrap select:hover { border-color: #c8bba6; }
+  .range-picker { display: flex; align-items: center; gap: 5px; }
+  .range-picker .tilde { color: #a7a08f; font-size: 12px; }
+  .keysig-select select { min-width: 148px; }
+  .control-divider { width: 1px; align-self: stretch; background: var(--line-soft); margin: 2px 0; }
+  .quick-range {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+  }
+  .quick-range span { color: var(--muted); font-size: 10px; margin-right: 2px; white-space: nowrap; }
+  .quick-range button {
+    height: 28px;
+    padding: 0 9px;
+    border: 1px solid #e0d7c8;
+    border-radius: 8px;
+    background: transparent;
+    color: #77776c;
+    font-size: 10.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 150ms, border-color 150ms, color 150ms;
+  }
+  .quick-range button:hover { background: #fffdf7; color: var(--forest); border-color: #cbbda6; }
+
+  /* ---------- main practice ---------- */
+  .practice-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 286px;
+    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+  .staff-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 318px;
+    padding: 17px 18px 15px;
+    overflow: hidden;
+    background:
+      linear-gradient(115deg, rgba(255,255,255,0.72), transparent 46%),
+      var(--card);
+    border: 1px solid rgba(219, 210, 195, 0.9);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+  .staff-card::after {
+    content: "";
+    position: absolute;
+    width: 170px; height: 170px;
+    right: -70px; top: -76px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(178, 199, 169, 0.18), transparent 68%);
+    pointer-events: none;
+  }
+  .staff-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .question-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-right: 3px;
+    color: var(--ink-soft);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .question-count b { color: var(--terra); font-family: var(--serif); font-size: 17px; font-weight: 700; }
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    border: 1px solid #e6ddce;
+    border-radius: 999px;
+    background: rgba(250, 246, 238, 0.72);
+    color: #6e6d61;
+    font-size: 10.5px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .meta-pill.key { color: #8a6426; background: var(--gold-soft); border-color: #eadab7; }
+  .staff-host {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 190px;
+    padding: 2px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .staff-host svg { display: block; width: 100%; height: auto; max-height: 300px; overflow: visible; }
+  .staff-guide { stroke: #eae2d4; stroke-width: 1; stroke-dasharray: 2 7; vector-effect: non-scaling-stroke; }
+  .staff-lines { stroke: #aaa596; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .staff-ledger { stroke: #615e53; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+  .staff-bar { stroke: #8b8679; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+  .staff-brace { fill: none; stroke: #615e53; stroke-width: 2.6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .staff-clef { fill: #25251f; }
+  .staff-sharp { fill: #33342d; }
+  .staff-note { fill: #22221d; }
+  .staff-note-stem { stroke: #22221d; stroke-width: 1.65; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .staff-note-halo { fill: rgba(180, 77, 55, 0.075); }
+  .answer-tag rect { fill: var(--green); }
+  .answer-tag text { fill: #fffdf7; font-family: var(--sans); font-weight: 700; letter-spacing: 0.02em; }
+  .wrong-answer-tag rect { fill: #b74430; }
+  .wrong-answer-tag text { fill: #fff9f2; font-family: var(--sans); font-weight: 700; letter-spacing: 0.02em; }
+  .staff-wrong-ledger { stroke: #bc4a35; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  .staff-wrong-note { fill: #b74430; }
+  .staff-wrong-note-stem { stroke: #b74430; stroke-width: 1.65; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .staff-wrong-accidental { fill: #b74430; }
+  .wrong-note-group { animation: wrong-note-in 220ms ease-out; }
+  @keyframes wrong-note-in { from { opacity: 0; } to { opacity: 1; } }
+  .question-note { transform-box: fill-box; transform-origin: center; animation: note-arrive 340ms cubic-bezier(.2,.7,.2,1); }
+  @keyframes note-arrive {
+    from { opacity: 0; transform: scale(0.6) translateY(3px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .staff-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 2px 0;
+    border-top: 1px solid #eee7dc;
+    color: var(--muted);
+    font-size: 10.5px;
+    position: relative;
+    z-index: 1;
+  }
+  .staff-instruction { display: inline-flex; align-items: center; gap: 7px; }
+  .pulse-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--terra);
+    box-shadow: 0 0 0 3px rgba(180, 77, 55, 0.1);
+    animation: soft-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes soft-pulse { 0%,100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.25); opacity: 1; } }
+
+  /* ---------- feedback ---------- */
+  .feedback-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 318px;
+    padding: 19px 18px 16px;
+    border: 1px solid #e4dac9;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(260px 160px at 100% 0%, rgba(255,255,255,0.7), transparent 70%),
+      #faf3e5;
+    box-shadow: var(--shadow-card);
+    transition: background 220ms ease, border-color 220ms ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .feedback-top { display: flex; align-items: flex-start; gap: 11px; }
+  .feedback-icon {
+    width: 37px; height: 37px;
+    flex: 0 0 auto;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    background: #fffaf0;
+    border: 1px solid #e8dcc8;
+    color: var(--terra);
+    font-family: "Noto Music", var(--serif);
+    font-size: 19px;
+    line-height: 1;
+    padding-top: 3px;
+    transition: all 180ms ease;
+  }
+  .feedback-kicker {
+    color: #9b8f7b;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 1px 0 4px;
+  }
+  .feedback-title {
+    font-family: var(--serif);
+    font-size: 21px;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+  .feedback-title .accent { color: var(--terra); }
+  .feedback-text {
+    margin: 10px 0 0;
+    color: #726d60;
+    font-size: 11.5px;
+    line-height: 1.72;
+  }
+  .feedback-tip {
+    margin-top: 15px;
+    padding: 10px 11px;
+    border: 1px solid #e8ddca;
+    border-radius: 10px;
+    background: rgba(255, 253, 247, 0.55);
+  }
+  .feedback-tip[hidden] { display: none; }
+  .feedback-tip-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #a38f6d;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+  .feedback-tip p {
+    margin: 0;
+    color: #807969;
+    font-size: 10px;
+    line-height: 1.65;
+  }
+  .feedback-details { margin-top: 12px; display: grid; gap: 7px; }
+  .feedback-details[hidden] { display: none; }
+  .compare-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: 11px;
+  }
+  .compare-row[hidden] { display: none; }
+  .compare-row .compare-label {
+    flex: 0 0 auto;
+    width: 39px;
+    color: #9a9284;
+    font-size: 9.5px;
+  }
+  html[lang="en"] .compare-row .compare-label { width: 72px; white-space: nowrap; }
+  .note-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 2px 9px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .note-pill.wrong { background: #f6ded8; color: #a33c2b; border: 1px solid #efc9c0; }
+  .note-pill.correct { background: #dff0e7; color: #236449; border: 1px solid #c5e1d3; }
+  .key-location {
+    margin-top: 2px;
+    color: #777164;
+    font-size: 10.5px;
+    line-height: 1.6;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: rgba(255, 253, 247, 0.7);
+    border: 1px dashed #e3d8c5;
+  }
+  .key-location strong { color: var(--green); }
+  .feedback-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 15px;
+  }
+  .btn {
+    border: 1px solid transparent;
+    border-radius: 11px;
+    height: 38px;
+    padding: 0 14px;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease, opacity 140ms;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.ghost {
+    flex: 1;
+    color: #66665b;
+    background: rgba(255, 253, 247, 0.55);
+    border-color: #ded1bd;
+  }
+  .btn.ghost:hover { background: #fffdf7; border-color: #c9b99f; }
+  .btn.primary {
+    flex: 1.2;
+    color: #fffdf7;
+    background: var(--forest);
+    box-shadow: 0 5px 13px rgba(24, 63, 54, 0.16);
+  }
+  .btn.primary:hover { background: var(--forest-2); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; transform: none; }
+  .btn[hidden] { display: none; }
+
+  .feedback-card.is-correct { background: linear-gradient(150deg, #eef8f1, #e2f1e8); border-color: #bcdcc9; }
+  .feedback-card.is-correct .feedback-icon { background: #d4ecdd; border-color: #b8dbc6; color: var(--green); }
+  .feedback-card.is-correct .feedback-kicker { color: #5e9079; }
+  .feedback-card.is-wrong { background: linear-gradient(150deg, #fcf1ec, #f8e7e1); border-color: #e9c8bd; }
+  .feedback-card.is-wrong .feedback-icon { background: #f5d9d1; border-color: #e7c0b4; color: var(--terra); }
+  .feedback-card.is-wrong .feedback-kicker { color: #ae5a46; }
+  .feedback-card.is-revealed { background: linear-gradient(150deg, #fbf6e9, #f4ecd8); border-color: #e3d4b4; }
+  .feedback-card.is-revealed .feedback-icon { background: #f6ebcf; border-color: #e5d4b0; color: var(--gold); }
+  .feedback-card.is-revealed .feedback-kicker { color: #9d7b39; }
+
+  /* ---------- piano ---------- */
+  .piano-card {
+    position: relative;
+    padding: 16px 16px 12px;
+    border-radius: 25px;
+    background:
+      radial-gradient(120% 100% at 50% -20%, rgba(90, 137, 116, 0.26), transparent 55%),
+      linear-gradient(155deg, #1e4a3e, #14372e 72%, #112f27);
+    box-shadow: 0 24px 50px rgba(29, 52, 41, 0.18), inset 0 1px 0 rgba(255,255,255,0.09);
+    overflow: hidden;
+  }
+  .piano-card::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0; height: 5px;
+    background: linear-gradient(90deg, #8f3728, #bc5a43 44%, #8f3728);
+    opacity: 0.9;
+  }
+  .piano-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 28px;
+    margin-bottom: 8px;
+    color: #e9e2d2;
+  }
+  .piano-title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: var(--serif);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  .piano-title small {
+    font-family: var(--sans);
+    color: #95aa9f;
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+  }
+  .piano-tools { display: flex; align-items: center; gap: 10px; }
+  .key-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #a7b9ae;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+  .key-legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .legend-dot.green { background: #72c69d; box-shadow: 0 0 0 2px rgba(114,198,157,0.13); }
+  .legend-dot.red { background: #e48b76; box-shadow: 0 0 0 2px rgba(228,139,118,0.12); }
+  .pill-toggle {
+    height: 27px;
+    padding: 0 10px;
+    border: 1px solid rgba(222, 231, 218, 0.23);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.055);
+    color: #b9c9c0;
+    font-size: 9.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 150ms ease;
+  }
+  .pill-toggle:hover { background: rgba(255,255,255,0.1); color: #f3eee2; }
+  .pill-toggle[aria-pressed="true"] { color: #f2ead8; border-color: rgba(240, 226, 192, 0.4); background: rgba(255,255,255,0.1); }
+  .keyboard-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 16px 5px 8px;
+    margin: 0 -2px;
+    scrollbar-width: thin;
+    scrollbar-color: #55776b #16372d;
+    border-radius: 12px;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .keyboard-scroll::-webkit-scrollbar { height: 6px; }
+  .keyboard-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); border-radius: 6px; }
+  .keyboard-scroll::-webkit-scrollbar-thumb { background: #547468; border-radius: 6px; }
+  .keyboard {
+    position: relative;
+    height: clamp(142px, 20vw, 196px);
+    min-width: 100%;
+    display: flex;
+    align-items: stretch;
+    border-radius: 8px;
+    background: #0c201b;
+    box-shadow: 0 16px 23px rgba(0,0,0,0.28), 0 3px 0 #0b1e19, inset 0 2px 2px rgba(0,0,0,0.6);
+    touch-action: pan-x;
+    user-select: none;
+  }
+  .piano-key {
+    position: relative;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+  }
+  .white-key {
+    flex: 1 1 0;
+    min-width: 0;
+    z-index: 1;
+    overflow: hidden;
+    border-right: 1px solid #d4d4d0;
+    border-bottom: 1px solid #bdbdb8;
+    border-radius: 0 0 5px 5px;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.045), transparent 9%, transparent 91%, rgba(0,0,0,0.055)),
+      linear-gradient(180deg, #ffffff 0%, #fefefe 48%, #f3f3f1 100%);
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,0.98),
+      inset 0 -8px 11px rgba(0,0,0,0.055),
+      0 1px 0 rgba(0,0,0,0.06);
+    transition: background 120ms, box-shadow 160ms, transform 90ms;
+  }
+  .white-key::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 2px;
+    height: 36%;
+    border-radius: 0 0 48% 48%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,246,244,0.24) 52%, rgba(255,255,255,0));
+    opacity: 0.72;
+    pointer-events: none;
+  }
+  .white-key:first-child { border-radius: 0 0 5px 8px; }
+  .white-key:last-child { border-right: 0; border-radius: 0 0 8px 5px; }
+  .white-key:hover { background: linear-gradient(180deg, #ffffff, #f7f7f5); }
+  .white-key:active, .white-key.pressed { background: linear-gradient(180deg, #f5f5f3, #eaeae7); transform: translateY(1px); }
+  .black-key {
+    position: absolute;
+    top: 0;
+    height: 62%;
+    z-index: 3;
+    overflow: hidden;
+    border-radius: 0 0 4px 4px;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0.11), transparent 18%, transparent 82%, rgba(255,255,255,0.035)),
+      linear-gradient(180deg, #373737 0%, #1b1b1b 46%, #080808 100%);
+    border: 1px solid #030303;
+    border-top: 0;
+    box-shadow:
+      0 7px 8px rgba(0,0,0,0.36),
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      inset 0 -5px 5px rgba(255,255,255,0.04);
+    transition: background 100ms, transform 90ms, box-shadow 160ms;
+  }
+  .black-key::before {
+    content: "";
+    position: absolute;
+    left: 9%;
+    right: 9%;
+    top: 2px;
+    height: 30%;
+    border-radius: 3px 3px 35% 35%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.045) 45%, rgba(255,255,255,0) 100%);
+    opacity: 0.78;
+    pointer-events: none;
+  }
+  .black-key::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    width: 1px;
+    height: 28%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0));
+    opacity: 0.28;
+    pointer-events: none;
+  }
+  .black-key:hover { background: linear-gradient(180deg, #454545, #252525 48%, #101010); }
+  .black-key:active, .black-key.pressed { transform: translateY(2px); box-shadow: 0 3px 4px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.12); }
+  .key-name {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    transform: translateX(-50%);
+    z-index: 2;
+    color: #70706b;
+    font-size: clamp(8px, 1.1vw, 10.5px);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    pointer-events: none;
+    line-height: 1;
+    opacity: 0.96;
+  }
+  .black-key .key-name {
+    bottom: 6px;
+    color: #c3c3be;
+    font-size: clamp(7px, 0.9vw, 9px);
+    opacity: 0.92;
+  }
+  .keyboard.labels-off .key-name { opacity: 0; }
+  .keyboard.labels-off .white-key.is-c .key-name { opacity: 0.95; }
+  .white-key.is-c .key-name { color: #4f4f4b; font-weight: 700; }
+  .key-flag {
+    position: absolute;
+    left: 50%;
+    z-index: 5;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 17px;
+    min-width: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    font-size: 8.5px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    white-space: nowrap;
+    animation: flag-in 180ms ease-out;
+  }
+  @keyframes flag-in { from { opacity: 0; transform: translate(-50%, -3px) scale(.8); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+  .white-key .key-flag { top: 10px; }
+  .black-key .key-flag { top: 5px; height: 15px; min-width: 15px; font-size: 8px; }
+  .key-flag.wrong { background: #c34c36; color: #fffaf3; box-shadow: 0 2px 6px rgba(109, 35, 24, 0.24); }
+  .key-flag.correct { background: #2e7b5e; color: #fffaf3; box-shadow: 0 2px 6px rgba(20, 80, 57, 0.24); }
+  .white-key.is-wrong {
+    background: linear-gradient(180deg, #f9ddd6, #f0c7bd) !important;
+    box-shadow: inset 0 0 0 2px #c95640, inset 0 -8px 10px rgba(145, 49, 33, 0.08);
+  }
+  .white-key.is-correct {
+    background: linear-gradient(180deg, #e3f5ea, #c9e9d7) !important;
+    box-shadow: inset 0 0 0 2.5px #2e7b5e, 0 0 18px rgba(71, 169, 124, 0.35);
+  }
+  .black-key.is-wrong {
+    background: linear-gradient(180deg, #77382d, #4b2019) !important;
+    box-shadow: inset 0 0 0 2px #e2775f, 0 0 14px rgba(211, 88, 62, 0.3);
+  }
+  .black-key.is-correct {
+    background: linear-gradient(180deg, #286e54, #174c39) !important;
+    box-shadow: inset 0 0 0 2px #7dd2a9, 0 0 19px rgba(90, 202, 149, 0.42);
+  }
+  .white-key.is-wrong::before,
+  .white-key.is-correct::before,
+  .black-key.is-wrong::before,
+  .black-key.is-correct::before { opacity: 0.22; }
+  .black-key.is-wrong::after,
+  .black-key.is-correct::after { opacity: 0.1; }
+  .keyboard.labels-off .white-key.is-correct .key-name,
+  .keyboard.labels-off .white-key.is-wrong .key-name,
+  .keyboard.labels-off .black-key.is-correct .key-name,
+  .keyboard.labels-off .black-key.is-wrong .key-name { opacity: 1; }
+  .scroll-hint {
+    display: none;
+    margin: 2px 0 0;
+    text-align: center;
+    color: #7e9a8d;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+  .keyboard-scroll.is-scrollable + .scroll-hint { display: block; }
+
+  /* ---------- settings popover ---------- */
+  .settings-popover {
+    position: fixed;
+    z-index: 50;
+    top: 70px;
+    right: max(14px, calc((100vw - 1120px) / 2));
+    width: min(286px, calc(100vw - 28px));
+    padding: 15px;
+    background: #fffdf8;
+    border: 1px solid #dcd1bf;
+    border-radius: 18px;
+    box-shadow: 0 22px 55px rgba(51, 43, 28, 0.16), 0 3px 9px rgba(51, 43, 28, 0.06);
+    animation: pop-in 160ms ease-out;
+  }
+  .settings-popover[hidden] { display: none; }
+  @keyframes pop-in { from { opacity: 0; transform: translateY(-5px) scale(.98); } to { opacity: 1; transform: none; } }
+  .settings-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 0 2px 8px;
+  }
+  .settings-head strong { font-family: var(--serif); font-size: 16px; letter-spacing: 0.04em; }
+  .theme-block { padding: 1px 2px 12px; border-bottom: 1px solid #f0e9dd; }
+  .theme-heading {
+    margin-bottom: 7px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+  }
+  .theme-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .theme-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-height: 53px;
+    padding: 6px 3px 5px;
+    border: 1px solid #e2d8c7;
+    border-radius: 10px;
+    background: #fbf7ee;
+    color: #7d776a;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms, color 150ms, box-shadow 150ms;
+  }
+  .theme-choice:hover { background: #fffdf8; border-color: #cdbfa8; color: var(--forest); }
+  .theme-choice.active {
+    border-color: var(--forest);
+    background: #fffdf8;
+    color: var(--forest);
+    box-shadow: inset 0 0 0 1px var(--forest);
+  }
+  .theme-swatch {
+    display: block;
+    width: 34px;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid rgba(52, 46, 35, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+  .theme-swatch.warm { background: linear-gradient(90deg, #f3eee4 0 50%, #183f36 50%); }
+  .theme-swatch.white { background: linear-gradient(90deg, #ffffff 0 50%, #dce2da 50%); }
+  .theme-swatch.dark { background: linear-gradient(90deg, #161a17 0 50%, #e8ede5 50%); }
+  .lang-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .lang-choice {
+    height: 32px;
+    border: 1px solid #e2d8c7;
+    border-radius: 9px;
+    background: #fbf7ee;
+    color: #7d776a;
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms, border-color 150ms, color 150ms, box-shadow 150ms;
+  }
+  .lang-choice:hover { background: #fffdf8; border-color: #cdbfa8; color: var(--forest); }
+  .lang-choice.active {
+    border-color: var(--forest);
+    background: #fffdf8;
+    color: var(--forest);
+    box-shadow: inset 0 0 0 1px var(--forest);
+  }
+  html[data-theme="white"] .lang-choice { background: #f8faf7; border-color: #e2e7df; color: #6f7a6f; }
+  html[data-theme="white"] .lang-choice:hover { background: #fff; }
+  html[data-theme="white"] .lang-choice.active { background: #fff; border-color: var(--forest); color: var(--forest); box-shadow: inset 0 0 0 1px var(--forest); }
+  html[data-theme="dark"] .lang-choice { background: #1a201b; border-color: #333c34; color: #aab4a9; }
+  html[data-theme="dark"] .lang-choice:hover { background: #202720; color: #f0f4ed; border-color: #4b584e; }
+  html[data-theme="dark"] .lang-choice.active { background: #222a23; border-color: #5f8c74; color: #dcefe3; box-shadow: inset 0 0 0 1px #5f8c74; }
+  .settings-close {
+    border: 0; background: transparent; color: var(--muted); cursor: pointer;
+    width: 26px; height: 26px; border-radius: 8px; font-size: 18px; line-height: 1;
+  }
+  .settings-close:hover { background: #f2ebde; color: var(--ink); }
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 42px; padding: 3px 2px;
+    border-top: 1px solid #f0e9dd;
+    font-size: 11.5px; color: #5d6055;
+  }
+  .setting-row small { display: block; margin-top: 1px; color: #a09a8c; font-size: 9px; }
+  .switch { position: relative; width: 38px; height: 22px; flex: 0 0 auto; cursor: pointer; }
+  .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .switch-track {
+    display: block; width: 38px; height: 22px; border-radius: 999px;
+    background: #dcd1c0; transition: background 160ms ease;
+  }
+  .switch-track::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px;
+    border-radius: 50%; background: #fffdf8; box-shadow: 0 1px 3px rgba(40,34,24,0.18);
+    transition: transform 160ms ease;
+  }
+  .switch input:checked + .switch-track { background: var(--forest); }
+  .switch input:checked + .switch-track::after { transform: translateX(16px); }
+  .settings-reset {
+    width: 100%; margin-top: 10px; height: 36px;
+    border: 1px solid #e1d5c3; border-radius: 10px; background: #fbf6ec;
+    color: #766f62; font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+  .settings-reset:hover { background: #f6eddf; color: var(--terra); border-color: #d9c4b6; }
+
+  .toast {
+    position: fixed;
+    left: 50%; bottom: 24px;
+    transform: translate(-50%, 12px);
+    z-index: 80;
+    max-width: calc(100vw - 32px);
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: rgba(30, 39, 32, 0.92);
+    color: #f7f2e7;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+
+  @media (max-width: 900px) {
+    .practice-grid { grid-template-columns: minmax(0, 1fr) 260px; }
+    .quick-range { display: none; }
+  }
+  @media (max-width: 760px) {
+    .shell { padding: 14px 12px 22px; }
+    .topbar { gap: 10px; margin-bottom: 12px; min-height: 48px; }
+    .brand-mark { width: 42px; height: 42px; border-radius: 13px; font-size: 26px; }
+    .brand-copy strong { font-size: 22px; }
+    .stats { padding: 3px; border-radius: 13px; }
+    .stat { min-width: 0; padding: 2px 8px 3px; }
+    .stat b { font-size: 15px; }
+    .stat span { font-size: 8px; }
+    .icon-btn { width: 37px; height: 37px; border-radius: 11px; }
+    .control-deck { gap: 8px 10px; padding: 9px 10px; border-radius: 15px; }
+    .control-block { gap: 7px; }
+    .control-label { font-size: 9px; }
+    .segmented button { height: 29px; padding: 0 8px; font-size: 11px; }
+    .segmented button .clef-glyph { font-size: 16px; }
+    .segmented button .double-clef { font-size: 12px; gap: 3.5px; }
+    .select-wrap select { height: 34px; font-size: 11.5px; padding-left: 8px; padding-right: 23px; min-width: 62px; }
+    .keysig-select select { min-width: 133px; }
+    .practice-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+    .staff-card { min-height: 236px; padding: 13px 12px 11px; border-radius: 20px; }
+    .staff-host { min-height: 138px; }
+    .staff-host svg { max-height: 265px; }
+    .staff-footer { font-size: 9.5px; padding-top: 7px; }
+    .feedback-card { min-height: 0; padding: 14px 14px 13px; border-radius: 20px; }
+    .feedback-title { font-size: 19px; }
+    .feedback-text { font-size: 11px; margin-top: 7px; }
+    .feedback-tip { display: none; }
+    .feedback-actions { padding-top: 11px; }
+    .btn { height: 36px; }
+    .feedback-details { margin-top: 9px; }
+    .piano-card { padding: 13px 10px 8px; border-radius: 20px; }
+    .piano-head { margin-bottom: 4px; }
+    .piano-title { font-size: 12.5px; }
+    .piano-title small { display: none; }
+    .key-legend { display: none; }
+    .keyboard-scroll { padding-top: 14px; }
+    .keyboard { height: clamp(132px, 35vw, 170px); }
+    .scroll-hint { display: block; font-size: 8.5px; visibility: hidden; }
+    .keyboard-scroll.is-scrollable + .scroll-hint { visibility: visible; }
+    .settings-popover { top: 60px; right: 12px; }
+  }
+  @media (max-width: 430px) {
+    .topbar { flex-wrap: nowrap; gap: 8px; }
+    .top-spacer { display: block; flex: 1; }
+    .brand { gap: 8px; }
+    .brand-mark { width: 37px; height: 37px; border-radius: 11px; font-size: 23px; }
+    .brand-copy strong { font-size: 20px; letter-spacing: 0.04em; }
+    .stats { order: initial; width: auto; justify-content: flex-end; margin-top: 0; padding: 3px; gap: 0; }
+    .top-actions { margin-left: 0; gap: 6px; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 10px; }
+    .icon-btn svg { width: 17px; height: 17px; }
+    .stat { flex: 0 0 auto; min-width: 0; padding: 1px 5px 2px; }
+    .stat b { font-size: 12.5px; }
+    .stat span { font-size: 7px; letter-spacing: 0.02em; margin-top: 0; }
+    .stat + .stat { border-left: 1px solid #e5dbcb; }
+    .control-deck { display: grid; grid-template-columns: 1fr auto; }
+    .control-block:first-child { grid-column: 1 / -1; }
+    .range-block { grid-column: 1; }
+    .keysig-block { grid-column: 2; }
+    .keysig-select select { min-width: 116px; }
+    .segmented { width: 100%; }
+    .segmented button { flex: 1; justify-content: center; }
+    .control-block:first-child .segmented { flex: 1; }
+    .feedback-title { font-size: 18px; }
+    /* Longer English labels get their own rows instead of colliding on narrow screens. */
+    html[lang="en"] .control-deck { grid-template-columns: 1fr; }
+    html[lang="en"] .control-block:first-child,
+    html[lang="en"] .range-block,
+    html[lang="en"] .keysig-block { grid-column: 1; }
+    html[lang="en"] .range-picker { flex: 1; }
+    html[lang="en"] .range-picker .select-wrap { flex: 1; }
+    html[lang="en"] .range-picker select { width: 100%; }
+    html[lang="en"] .keysig-select { flex: 1; }
+    html[lang="en"] .keysig-select select { width: 100%; min-width: 0; }
+  }
+  @media (max-width: 380px) {
+    .select-wrap select { min-width: 56px; padding-right: 19px; font-size: 11px; }
+    .keysig-select select { min-width: 102px; }
+    .control-block { gap: 5px; }
+    .stat { padding: 1px 3px 2px; }
+    .icon-btn { width: 32px; height: 32px; }
+  }
+
+  /* ============================================================
+     Themes: current warm / clean white / black
+     ============================================================ */
+  html[data-theme="white"] {
+    color-scheme: light;
+    --paper: #f6f7f4;
+    --paper-deep: #edf1ec;
+    --card: #ffffff;
+    --ink: #20241f;
+    --ink-soft: #535b52;
+    --muted: #838c81;
+    --line: #dfe4dc;
+    --line-soft: #e9ede7;
+    --forest: #1e5343;
+    --forest-2: #286a55;
+    --forest-3: #347c65;
+    --terra: #b44833;
+    --terra-soft: #f7e9e4;
+    --green: #2b7b5d;
+    --green-soft: #eaf5ee;
+    --gold: #a87a2d;
+    --gold-soft: #f8f3e6;
+    --shadow-card: 0 18px 46px rgba(37, 51, 40, 0.07), 0 2px 6px rgba(37, 51, 40, 0.035);
+  }
+  html[data-theme="white"] body {
+    background:
+      radial-gradient(900px 540px at 8% -10%, rgba(255, 255, 255, 0.98), transparent 62%),
+      radial-gradient(900px 600px at 104% 8%, rgba(216, 230, 219, 0.35), transparent 60%),
+      linear-gradient(145deg, #fbfcfa 0%, #f2f5f0 54%, #f7f9f5 100%);
+  }
+  html[data-theme="white"] body::before {
+    opacity: 0.22;
+    background-image: repeating-linear-gradient(0deg, transparent 0 55px, rgba(52, 68, 54, 0.04) 55px 56px);
+  }
+  html[data-theme="white"] .stats { background: rgba(255, 255, 255, 0.8); border-color: #e0e5dd; }
+  html[data-theme="white"] .stat + .stat { border-color: #e7ebe4; }
+  html[data-theme="white"] .icon-btn { background: rgba(255, 255, 255, 0.86); border-color: #dfe4dc; color: #586257; }
+  html[data-theme="white"] .icon-btn:hover { background: #fff; color: var(--forest); border-color: #c6d0c5; }
+  html[data-theme="white"] .control-deck { background: rgba(255, 255, 255, 0.9); border-color: #e0e5dd; box-shadow: 0 6px 24px rgba(39, 54, 42, 0.035); }
+  html[data-theme="white"] .segmented { background: #f1f4ef; border-color: #e3e8e0; }
+  html[data-theme="white"] .segmented button { color: #6c766b; }
+  html[data-theme="white"] .segmented button.active { background: #fff; color: var(--forest); box-shadow: 0 2px 7px rgba(38, 55, 42, 0.1); }
+  html[data-theme="white"] .select-wrap select { background: #fff; border-color: #dfe4dc; }
+  html[data-theme="white"] .select-wrap select:hover { border-color: #c5cfc4; }
+  html[data-theme="white"] .quick-range button { border-color: #e1e6de; color: #6e786d; }
+  html[data-theme="white"] .quick-range button:hover { background: #fff; border-color: #c8d2c7; color: var(--forest); }
+  html[data-theme="white"] .staff-card {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.95), transparent 46%), #fff;
+    border-color: #e0e5dd;
+  }
+  html[data-theme="white"] .staff-card::after { background: radial-gradient(circle, rgba(116, 160, 136, 0.12), transparent 68%); }
+  html[data-theme="white"] .meta-pill { background: #f7f9f6; border-color: #e5e9e2; color: #6c776c; }
+  html[data-theme="white"] .meta-pill.key { background: #faf7ee; border-color: #ece5d6; color: #82632a; }
+  html[data-theme="white"] .staff-footer { border-color: #edf0eb; color: #8a9489; }
+  html[data-theme="white"] .staff-guide { stroke: #e6ebe4; }
+  html[data-theme="white"] .staff-lines { stroke: #b6bdb4; }
+  html[data-theme="white"] .staff-ledger { stroke: #626a60; }
+  html[data-theme="white"] .staff-bar { stroke: #8a9488; }
+  html[data-theme="white"] .staff-brace { stroke: #626a60; }
+  html[data-theme="white"] .staff-clef,
+  html[data-theme="white"] .staff-note { fill: #20241f; }
+  html[data-theme="white"] .staff-note-stem { stroke: #20241f; }
+  html[data-theme="white"] .staff-sharp { fill: #353b34; }
+  html[data-theme="white"] .staff-note-halo { fill: rgba(180, 72, 51, 0.07); }
+  html[data-theme="white"] .feedback-card { background: radial-gradient(260px 160px at 100% 0%, rgba(255,255,255,0.8), transparent 70%), #f8faf7; border-color: #e1e6de; }
+  html[data-theme="white"] .feedback-icon { background: #fff; border-color: #e4e9e1; }
+  html[data-theme="white"] .feedback-tip { background: rgba(255,255,255,0.7); border-color: #e6eae3; }
+  html[data-theme="white"] .feedback-card.is-correct { background: linear-gradient(150deg, #f5fbf7, #eaf6ef); border-color: #cfe6da; }
+  html[data-theme="white"] .feedback-card.is-wrong { background: linear-gradient(150deg, #fdf6f2, #faebe5); border-color: #ebcec5; }
+  html[data-theme="white"] .feedback-card.is-revealed { background: linear-gradient(150deg, #fcfaf4, #f7f0df); border-color: #e6d9bc; }
+  html[data-theme="white"] .piano-card {
+    background: radial-gradient(110% 100% at 50% -20%, rgba(184, 210, 193, 0.35), transparent 55%),
+                linear-gradient(155deg, #ffffff, #f2f5f0 72%, #edf1eb);
+    border: 1px solid #dfe5dd;
+    box-shadow: 0 18px 42px rgba(37, 52, 41, 0.1), inset 0 1px 0 #fff;
+  }
+  html[data-theme="white"] .piano-card::before { background: linear-gradient(90deg, #2f725b, #72aa8e 44%, #2f725b); }
+  html[data-theme="white"] .piano-head { color: #303a31; }
+  html[data-theme="white"] .piano-title small { color: #7e8b7f; }
+  html[data-theme="white"] .key-legend { color: #758276; }
+  html[data-theme="white"] .pill-toggle { background: #f7faf6; border-color: #dce4da; color: #5e6b60; }
+  html[data-theme="white"] .pill-toggle:hover { background: #fff; color: var(--forest); }
+  html[data-theme="white"] .pill-toggle[aria-pressed="true"] { background: #edf6f0; border-color: #bfd6c7; color: #245a44; }
+  html[data-theme="white"] .keyboard-scroll { scrollbar-color: #98a99b #eef2ec; }
+  html[data-theme="white"] .keyboard-scroll::-webkit-scrollbar-track { background: rgba(70, 90, 72, 0.08); }
+  html[data-theme="white"] .keyboard-scroll::-webkit-scrollbar-thumb { background: #a9b7a9; }
+  html[data-theme="white"] .scroll-hint { color: #7d8d7e; }
+  html[data-theme="white"] .settings-popover { background: #fff; border-color: #e0e5dd; box-shadow: 0 22px 55px rgba(35, 50, 38, 0.14); }
+  html[data-theme="white"] .theme-block { border-color: #eef1eb; }
+  html[data-theme="white"] .theme-choice { background: #f8faf7; border-color: #e2e7df; color: #6f7a6f; }
+  html[data-theme="white"] .theme-choice:hover { background: #fff; }
+  html[data-theme="white"] .theme-choice.active {
+    background: #fff;
+    border-color: var(--forest);
+    color: var(--forest);
+    box-shadow: inset 0 0 0 1px var(--forest);
+  }
+  html[data-theme="white"] .settings-reset { background: #f8faf7; border-color: #e1e6de; color: #6c776c; }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #0f1210;
+    --paper-deep: #0a0d0b;
+    --card: #171b18;
+    --ink: #edf1e9;
+    --ink-soft: #c1c9bf;
+    --muted: #899389;
+    --line: #303831;
+    --line-soft: #262d27;
+    --forest: #347a61;
+    --forest-2: #3f8b6e;
+    --forest-3: #52a184;
+    --terra: #e18a72;
+    --terra-soft: #35221d;
+    --green: #81c7a7;
+    --green-soft: #163127;
+    --gold: #d8b36b;
+    --gold-soft: #2d2719;
+    --shadow-card: 0 22px 55px rgba(0, 0, 0, 0.34), 0 2px 8px rgba(0, 0, 0, 0.22);
+  }
+  html[data-theme="dark"] body {
+    background:
+      radial-gradient(1100px 600px at 8% -12%, rgba(42, 75, 58, 0.28), transparent 60%),
+      radial-gradient(900px 600px at 104% 8%, rgba(100, 71, 41, 0.16), transparent 62%),
+      linear-gradient(145deg, #121613 0%, #0d100e 54%, #121513 100%);
+  }
+  html[data-theme="dark"] body::before {
+    opacity: 0.2;
+    background-image: repeating-linear-gradient(0deg, transparent 0 55px, rgba(255,255,255,0.035) 55px 56px);
+  }
+  html[data-theme="dark"] .brand-mark { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.13), 0 8px 20px rgba(0,0,0,0.3); }
+  html[data-theme="dark"] .brand-copy strong { color: #edf1e9; }
+  html[data-theme="dark"] .stats { background: rgba(23, 27, 24, 0.78); border-color: #2c342d; }
+  html[data-theme="dark"] .stat + .stat { border-color: #2b332c; }
+  html[data-theme="dark"] .stat b { color: #e3f0e7; }
+  html[data-theme="dark"] .stat span { color: #8e9b90; }
+  html[data-theme="dark"] .icon-btn { background: rgba(23,27,24,0.86); border-color: #303831; color: #c6cec3; }
+  html[data-theme="dark"] .icon-btn:hover { background: #202720; color: #f4f7f0; border-color: #465247; }
+  html[data-theme="dark"] .icon-btn[aria-pressed="false"] { color: #7f8b81; }
+  html[data-theme="dark"] .control-deck { background: rgba(23, 27, 24, 0.82); border-color: #2c342d; box-shadow: 0 6px 26px rgba(0,0,0,0.18); }
+  html[data-theme="dark"] .control-label { color: #899389; }
+  html[data-theme="dark"] .segmented { background: #0f1310; border-color: #2d352e; }
+  html[data-theme="dark"] .segmented button { color: #a0aaa0; }
+  html[data-theme="dark"] .segmented button:hover { color: #eef3eb; }
+  html[data-theme="dark"] .segmented button.active { background: #242b25; color: #eef3eb; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  html[data-theme="dark"] .select-wrap select { background: #161c17; border-color: #343d35; color: #edf1e9; }
+  html[data-theme="dark"] .select-wrap select:hover { border-color: #4b594e; }
+  html[data-theme="dark"] .select-wrap::after { border-color: #8e998f; }
+  html[data-theme="dark"] .quick-range span { color: #8e998f; }
+  html[data-theme="dark"] .quick-range button { border-color: #303831; color: #a3ada2; }
+  html[data-theme="dark"] .quick-range button:hover { background: #202720; color: #f1f5ed; border-color: #465247; }
+  html[data-theme="dark"] .staff-card {
+    background: linear-gradient(115deg, rgba(255,255,255,0.025), transparent 46%), #171b18;
+    border-color: #2c342d;
+  }
+  html[data-theme="dark"] .staff-card::after { background: radial-gradient(circle, rgba(112, 168, 137, 0.1), transparent 68%); }
+  html[data-theme="dark"] .question-count { color: #b8c1b7; }
+  html[data-theme="dark"] .meta-pill { background: #1d231e; border-color: #313a32; color: #a9b3a8; }
+  html[data-theme="dark"] .meta-pill.key { background: #2a271b; border-color: #3c3929; color: #d7bf85; }
+  html[data-theme="dark"] .staff-footer { border-color: #262d27; color: #89958a; }
+  html[data-theme="dark"] .staff-guide { stroke: #2d372f; }
+  html[data-theme="dark"] .staff-lines { stroke: #4b574c; }
+  html[data-theme="dark"] .staff-ledger { stroke: #a1ad9f; }
+  html[data-theme="dark"] .staff-bar { stroke: #818d80; }
+  html[data-theme="dark"] .staff-brace { stroke: #a1ad9f; }
+  html[data-theme="dark"] .staff-clef,
+  html[data-theme="dark"] .staff-note { fill: #e9eee6; }
+  html[data-theme="dark"] .staff-note-stem { stroke: #e9eee6; }
+  html[data-theme="dark"] .staff-sharp { fill: #c5cec2; }
+  html[data-theme="dark"] .staff-note-halo { fill: rgba(225, 138, 114, 0.12); }
+  html[data-theme="dark"] .staff-wrong-note { fill: #ec745d; }
+  html[data-theme="dark"] .staff-wrong-note-stem { stroke: #ec745d; }
+  html[data-theme="dark"] .staff-wrong-ledger { stroke: #df6d56; }
+  html[data-theme="dark"] .staff-wrong-accidental { fill: #ec745d; }
+  html[data-theme="dark"] .feedback-card {
+    background: radial-gradient(260px 160px at 100% 0%, rgba(80, 120, 96, 0.1), transparent 70%), #171b18;
+    border-color: #2c342d;
+  }
+  html[data-theme="dark"] .feedback-card.is-correct { background: linear-gradient(150deg, #15251e, #102019); border-color: #2d5543; }
+  html[data-theme="dark"] .feedback-card.is-wrong { background: linear-gradient(150deg, #2a1a17, #211310); border-color: #59342b; }
+  html[data-theme="dark"] .feedback-card.is-revealed { background: linear-gradient(150deg, #242113, #1b1a10); border-color: #4b4327; }
+  html[data-theme="dark"] .feedback-icon { background: #1e241f; border-color: #313a32; color: #e0a08b; }
+  html[data-theme="dark"] .feedback-kicker { color: #8e9a90; }
+  html[data-theme="dark"] .feedback-text { color: #aeb8ac; }
+  html[data-theme="dark"] .feedback-tip { background: rgba(255,255,255,0.025); border-color: #313a32; }
+  html[data-theme="dark"] .feedback-tip-label { color: #b19c75; }
+  html[data-theme="dark"] .feedback-tip p { color: #a7b2a6; }
+  html[data-theme="dark"] .compare-label { color: #8f9b90; }
+  html[data-theme="dark"] .note-pill.wrong { background: #3b211c; color: #f2aa96; border-color: #62382e; }
+  html[data-theme="dark"] .note-pill.correct { background: #173229; color: #91dfbb; border-color: #2f5b48; }
+  html[data-theme="dark"] .key-location { background: #1c231e; border-color: #343e35; color: #abb6aa; }
+  html[data-theme="dark"] .key-location strong { color: #91dfbb; }
+  html[data-theme="dark"] .btn.ghost { background: rgba(255,255,255,0.03); border-color: #333c34; color: #c3ccc1; }
+  html[data-theme="dark"] .btn.ghost:hover { background: #222a23; border-color: #485449; }
+  html[data-theme="dark"] .btn.primary { background: #2f725b; color: #f8fbf7; box-shadow: 0 5px 13px rgba(0,0,0,0.25); }
+  html[data-theme="dark"] .btn.primary:hover { background: #3a846a; }
+  html[data-theme="dark"] .feedback-card.is-correct .feedback-kicker { color: #86c6a7; }
+  html[data-theme="dark"] .feedback-card.is-wrong .feedback-kicker { color: #e39a85; }
+  html[data-theme="dark"] .feedback-card.is-revealed .feedback-kicker { color: #d8b46a; }
+  html[data-theme="dark"] .feedback-card.is-correct .feedback-icon { background: #19372b; border-color: #2c5a45; color: #8edbb8; }
+  html[data-theme="dark"] .feedback-card.is-wrong .feedback-icon { background: #3b221d; border-color: #63382f; color: #f0a18d; }
+  html[data-theme="dark"] .feedback-card.is-revealed .feedback-icon { background: #332d1b; border-color: #51472b; color: #d8b46a; }
+  html[data-theme="dark"] .piano-card {
+    background: radial-gradient(120% 100% at 50% -20%, rgba(72, 126, 102, 0.2), transparent 55%),
+                linear-gradient(155deg, #173c31, #0f2922 72%, #0b211b);
+    box-shadow: 0 24px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  html[data-theme="dark"] .piano-head { color: #dfe8de; }
+  html[data-theme="dark"] .piano-title small { color: #8fa99b; }
+  html[data-theme="dark"] .key-legend { color: #91a99c; }
+  html[data-theme="dark"] .pill-toggle { background: rgba(255,255,255,0.04); border-color: rgba(222,231,218,0.2); color: #b7c8bd; }
+  html[data-theme="dark"] .pill-toggle[aria-pressed="true"] { background: rgba(255,255,255,0.09); border-color: rgba(240,226,192,0.32); color: #f0e7d6; }
+  html[data-theme="dark"] .keyboard-scroll { scrollbar-color: #49695c #0b211b; }
+  html[data-theme="dark"] .keyboard-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.22); }
+  html[data-theme="dark"] .keyboard-scroll::-webkit-scrollbar-thumb { background: #55776a; }
+  html[data-theme="dark"] .scroll-hint { color: #759584; }
+  html[data-theme="dark"] .settings-popover { background: #171b18; border-color: #333c34; box-shadow: 0 22px 55px rgba(0,0,0,0.45); }
+  html[data-theme="dark"] .settings-head strong { color: #edf1e9; }
+  html[data-theme="dark"] .settings-close { color: #9aa59b; }
+  html[data-theme="dark"] .settings-close:hover { background: #252c26; color: #f3f6f0; }
+  html[data-theme="dark"] .theme-block { border-color: #2a322b; }
+  html[data-theme="dark"] .theme-heading { color: #899389; }
+  html[data-theme="dark"] .theme-choice { background: #1a201b; border-color: #333c34; color: #aab4a9; }
+  html[data-theme="dark"] .theme-choice:hover { background: #202720; color: #f0f4ed; border-color: #4b584e; }
+  html[data-theme="dark"] .theme-choice.active { background: #222a23; border-color: #5f8c74; color: #dcefe3; box-shadow: inset 0 0 0 1px #5f8c74; }
+  html[data-theme="dark"] .theme-swatch { border-color: rgba(255,255,255,0.18); }
+  html[data-theme="dark"] .setting-row { border-color: #262e27; color: #c3ccc1; }
+  html[data-theme="dark"] .setting-row small { color: #8e998f; }
+  html[data-theme="dark"] .switch-track { background: #343d35; }
+  html[data-theme="dark"] .switch input:checked + .switch-track { background: #3c8a6d; }
+  html[data-theme="dark"] .switch-track::after { background: #f2f5ef; }
+  html[data-theme="dark"] .settings-reset { background: #1b211c; border-color: #333c34; color: #c0c9be; }
+  html[data-theme="dark"] .settings-reset:hover { background: #2a1b17; border-color: #5a342b; color: #eaa38e; }
+  html[data-theme="dark"] .toast { background: rgba(238, 243, 235, 0.96); color: #171c18; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="谱读首页" data-i18n-aria="brandHome">
+      <span class="brand-mark" aria-hidden="true">𝄞</span>
+      <span class="brand-copy">
+        <strong data-i18n="brand">谱读</strong>
+      </span>
+    </a>
+    <div class="top-spacer"></div>
+    <div class="stats" aria-label="本次练习统计" data-i18n-aria="statsAria">
+      <div class="stat"><b id="statCorrect">0</b><span data-i18n="statCorrect">答对</span></div>
+      <div class="stat"><b id="statAccuracy">—</b><span data-i18n="statAccuracy">正确率</span></div>
+      <div class="stat"><b id="statStreak">0</b><span data-i18n="statStreak">连对</span></div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="soundBtn" type="button" aria-label="关闭音效" aria-pressed="true" title="音效" data-i18n-title="sound">
+        <svg id="soundOnIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.4 5.6a9 9 0 0 1 0 12.8"/></svg>
+        <svg id="soundOffIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 10 5 5"/><path d="m21 10-5 5"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" type="button" aria-label="练习设置" aria-expanded="false" aria-controls="settingsPopover" title="设置" data-i18n-title="settings" data-i18n-aria="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.94 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.57 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.94a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.57 1.7 1.7 0 0 0 10.03 3H10a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.06 4.7a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.43 9c.12.4.4.74.78.96.26.15.56.23.87.23H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="control-deck" aria-label="练习设置" data-i18n-aria="controlsAria">
+      <div class="control-block">
+        <span class="control-label" data-i18n="clefLabel">谱号</span>
+        <div class="segmented" id="clefSegment" role="group" aria-label="选择谱号" data-i18n-aria="chooseClefAria">
+          <button type="button" data-clef="treble" class="active" aria-pressed="true"><span class="clef-glyph" aria-hidden="true">𝄞</span><span data-i18n="clefTreble">高音谱</span></button>
+          <button type="button" data-clef="bass" aria-pressed="false"><span class="clef-glyph" aria-hidden="true">𝄢</span><span data-i18n="clefBass">低音谱</span></button>
+          <button type="button" data-clef="grand" aria-pressed="false"><span class="double-clef" aria-hidden="true"><span>𝄞</span><span>𝄢</span></span><span data-i18n="clefGrand">大谱表</span></button>
+        </div>
+      </div>
+      <div class="control-block range-block">
+        <label class="control-label" for="lowSelect" data-i18n="rangeLabel">音区</label>
+        <div class="range-picker">
+          <span class="select-wrap"><select id="lowSelect" aria-label="最低音" data-i18n-aria="rangeLowAria"></select></span>
+          <span class="tilde" data-i18n="to">至</span>
+          <span class="select-wrap"><select id="highSelect" aria-label="最高音" data-i18n-aria="rangeHighAria"></select></span>
+        </div>
+      </div>
+      <div class="control-block keysig-block">
+        <label class="control-label" for="keySelect" data-i18n="keyLabel">调号</label>
+        <span class="select-wrap keysig-select"><select id="keySelect" aria-label="选择升号调号" data-i18n-aria="keySelectAria"></select></span>
+      </div>
+      <div class="quick-range" aria-label="快速音区" data-i18n-aria="quickRangeAria">
+        <span data-i18n="quick">快速</span>
+        <button type="button" data-preset="five" data-i18n="presetFive">五音</button>
+        <button type="button" data-preset="octave" data-i18n="presetOctave">一个八度</button>
+        <button type="button" data-preset="staff" data-i18n="presetStaff">谱表内</button>
+      </div>
+    </section>
+
+    <section class="practice-grid">
+      <article class="staff-card" id="staffCard">
+        <div class="staff-meta">
+          <span class="question-count"><span data-i18n="questionPrefix">第</span> <b id="questionNumber">1</b> <span data-i18n="questionSuffix">题</span></span>
+          <span class="meta-pill" id="clefMeta">高音谱表</span>
+          <span class="meta-pill" id="rangeMeta">C4–B4 · 7 个音</span>
+          <span class="meta-pill key" id="keyMeta">C 大调 · 无升号</span>
+        </div>
+        <div class="staff-host" id="staffHost" role="img" aria-label="五线谱上的练习音符"></div>
+        <div class="staff-footer">
+          <span class="staff-instruction"><i class="pulse-dot" aria-hidden="true"></i><span id="staffInstruction" data-i18n="staffInstruction">读出这个音，点击下方对应的琴键</span></span>
+        </div>
+      </article>
+
+      <aside class="feedback-card" id="feedbackCard" aria-live="polite" aria-atomic="true">
+        <div class="feedback-top">
+          <div class="feedback-icon" id="feedbackIcon" aria-hidden="true">♪</div>
+          <div class="feedback-copy">
+            <div class="feedback-kicker" id="feedbackKicker">准备好就开始</div>
+            <h2 class="feedback-title" id="feedbackTitle">读出这个音</h2>
+            <p class="feedback-text" id="feedbackText">在下方钢琴上弹出对应的琴键。<br>升号调也要记得按黑键。</p>
+          </div>
+        </div>
+        <div class="feedback-tip" id="feedbackTip">
+          <span class="feedback-tip-label" data-i18n="tipLabel">识谱小贴士</span>
+          <p id="feedbackTipText">高音谱表：五条线从下往上是 E4 · G4 · B4 · D5 · F5。</p>
+        </div>
+        <div class="feedback-details" id="feedbackDetails" hidden>
+          <div class="compare-row"><span class="compare-label" data-i18n="youPlayed">你按的</span><span class="note-pill wrong" id="wrongNotePill">—</span></div>
+          <div class="compare-row"><span class="compare-label" data-i18n="correctNote">正确音</span><span class="note-pill correct" id="correctNotePill">—</span></div>
+          <div class="key-location" id="keyLocation"></div>
+        </div>
+        <div class="feedback-actions">
+          <button class="btn ghost" id="revealBtn" type="button" data-i18n="reveal">看答案</button>
+          <button class="btn primary" id="nextBtn" type="button" disabled data-i18n="next">下一题</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="piano-card" aria-label="模拟钢琴键盘" data-i18n-aria="pianoAria">
+      <div class="piano-head">
+        <div class="piano-title"><span data-i18n="pianoTitle">模拟钢琴</span> <small id="keyboardRange">C4 – B4</small></div>
+        <div class="piano-tools">
+          <div class="key-legend" aria-hidden="true">
+            <span><i class="legend-dot green"></i><span data-i18n="legendCorrect">正确键</span></span>
+            <span><i class="legend-dot red"></i><span data-i18n="legendWrong">按错键</span></span>
+          </div>
+          <button class="pill-toggle" id="labelsBtn" type="button" aria-pressed="true" data-i18n="keyNames">琴键音名</button>
+        </div>
+      </div>
+      <div class="keyboard-scroll" id="keyboardScroll">
+        <div class="keyboard" id="keyboard" role="group" aria-label="钢琴键盘" data-i18n-aria="keyboardAria"></div>
+      </div>
+      <div class="scroll-hint" id="scrollHint" data-i18n="scrollHint">← 左右滑动查看完整琴键 →</div>
+    </section>
+  </main>
+</div>
+
+<div class="settings-popover" id="settingsPopover" hidden role="dialog" aria-label="练习设置" data-i18n-aria="settingsTitle">
+  <div class="settings-head">
+    <strong data-i18n="settingsTitle">练习设置</strong>
+    <button class="settings-close" id="settingsClose" type="button" aria-label="关闭设置" data-i18n-aria="closeSettings">×</button>
+  </div>
+  <div class="theme-block">
+    <div class="theme-heading" data-i18n="appearance">界面风格</div>
+    <div class="theme-picker" id="themePicker" role="group" aria-label="界面风格" data-i18n-aria="themeAria">
+      <button class="theme-choice active" type="button" data-theme-choice="warm" aria-pressed="true"><span class="theme-swatch warm"></span><span data-i18n="themeWarm">当前</span></button>
+      <button class="theme-choice" type="button" data-theme-choice="white" aria-pressed="false"><span class="theme-swatch white"></span><span data-i18n="themeWhite">白色</span></button>
+      <button class="theme-choice" type="button" data-theme-choice="dark" aria-pressed="false"><span class="theme-swatch dark"></span><span data-i18n="themeDark">黑色</span></button>
+    </div>
+  </div>
+  <div class="theme-block">
+    <div class="theme-heading" data-i18n="languageHeading">语言</div>
+    <div class="lang-picker" id="langPicker" role="group" aria-label="语言" data-i18n-aria="languageAria">
+      <button class="lang-choice active" type="button" data-lang-choice="auto" aria-pressed="true"><span data-i18n="langAuto">自动</span></button>
+      <button class="lang-choice" type="button" data-lang-choice="zh" aria-pressed="false">中文</button>
+      <button class="lang-choice" type="button" data-lang-choice="en" aria-pressed="false">English</button>
+    </div>
+  </div>
+  <div class="setting-row">
+    <div><span data-i18n="showKeyNames">琴键音名</span><small data-i18n="showKeyNamesHint">在琴键上标出音名，便于初学</small></div>
+    <label class="switch"><input type="checkbox" id="labelsToggle" checked><span class="switch-track"></span></label>
+  </div>
+  <div class="setting-row">
+    <div><span data-i18n="autoNext">答对自动下一题</span><small data-i18n="autoNextHint">留出 1 秒看反馈</small></div>
+    <label class="switch"><input type="checkbox" id="autoNextToggle" checked><span class="switch-track"></span></label>
+  </div>
+  <div class="setting-row">
+    <div><span data-i18n="soundSetting">练习音效</span><small data-i18n="soundHint">按下琴键时的钢琴声</small></div>
+    <label class="switch"><input type="checkbox" id="soundToggle" checked><span class="switch-track"></span></label>
+  </div>
+  <button class="settings-reset" id="resetBtn" type="button" data-i18n="reset">重新开始本次练习</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ============================================================
+     Music theory helpers
+     ============================================================ */
+  const LETTERS = ["C", "D", "E", "F", "G", "A", "B"];
+  const LETTER_INDEX = { C: 0, D: 1, E: 2, F: 3, G: 4, A: 5, B: 6 };
+  const SEMITONE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const SHARP_ORDER = ["F", "C", "G", "D", "A", "E", "B"];
+  const SHARP_NAMES = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+  const WHITE_PCS = new Set([0, 2, 4, 5, 7, 9, 11]);
+  const BLACK_LEFT_LETTER = { 1: "C", 3: "D", 6: "F", 8: "G", 10: "A" };
+  const BLACK_RIGHT_LETTER = { 1: "D", 3: "E", 6: "G", 8: "A", 10: "B" };
+  const BLACK_OFFSET = { 1: 0.56, 3: 0.44, 6: 0.56, 8: 0.5, 10: 0.44 };
+
+  const KEY_SIGNATURES = [
+    { count: 0, name: { zh: "C 大调", en: "C major" }, sharps: { zh: "无升号", en: "No sharps" } },
+    { count: 1, name: { zh: "G 大调", en: "G major" }, sharps: { zh: "F♯", en: "F♯" } },
+    { count: 2, name: { zh: "D 大调", en: "D major" }, sharps: { zh: "F♯ C♯", en: "F♯ C♯" } },
+    { count: 3, name: { zh: "A 大调", en: "A major" }, sharps: { zh: "F♯ C♯ G♯", en: "F♯ C♯ G♯" } },
+    { count: 4, name: { zh: "E 大调", en: "E major" }, sharps: { zh: "F♯ C♯ G♯ D♯", en: "F♯ C♯ G♯ D♯" } },
+    { count: 5, name: { zh: "B 大调", en: "B major" }, sharps: { zh: "F♯ C♯ G♯ D♯ A♯", en: "F♯ C♯ G♯ D♯ A♯" } },
+    { count: 6, name: { zh: "F♯ 大调", en: "F♯ major" }, sharps: { zh: "F♯ C♯ G♯ D♯ A♯ E♯", en: "F♯ C♯ G♯ D♯ A♯ E♯" } },
+    { count: 7, name: { zh: "C♯ 大调", en: "C♯ major" }, sharps: { zh: "七个升号", en: "7 sharps" } }
+  ];
+
+  const SHARP_STAFF_POSITIONS = {
+    treble: [
+      { letter: "F", octave: 5 }, { letter: "C", octave: 5 }, { letter: "G", octave: 5 },
+      { letter: "D", octave: 5 }, { letter: "A", octave: 4 }, { letter: "E", octave: 5 },
+      { letter: "B", octave: 4 }
+    ],
+    bass: [
+      { letter: "F", octave: 3 }, { letter: "C", octave: 3 }, { letter: "G", octave: 3 },
+      { letter: "D", octave: 3 }, { letter: "A", octave: 2 }, { letter: "E", octave: 3 },
+      { letter: "B", octave: 2 }
+    ]
+  };
+
+  const CLEF_LABELS = {
+    treble: { zh: "高音谱表", en: "Treble staff" },
+    bass: { zh: "低音谱表", en: "Bass staff" },
+    grand: { zh: "大谱表", en: "Grand staff" }
+  };
+  const CLEF_KEY = { treble: 38, bass: 26 }; // top staff line's diatonic number
+  const DEFAULT_RANGES = {
+    treble: { low: "C4", high: "B4" },
+    bass: { low: "C2", high: "B3" },
+    grand: { low: "C3", high: "C5" }
+  };
+  const PRESETS = {
+    five: { low: "C4", high: "G4" },
+    octave: { low: "C4", high: "B4" },
+    staff: { low: "C3", high: "C5" }
+  };
+
+  const diatonic = (letter, octave) => octave * 7 + LETTER_INDEX[letter];
+  const naturalMidi = (letter, octave) => (octave + 1) * 12 + SEMITONE[letter];
+  const midiToOctave = (midi) => Math.floor(midi / 12) - 1;
+  const midiToPc = (midi) => ((midi % 12) + 12) % 12;
+  const midiToName = (midi) => SHARP_NAMES[midiToPc(midi)] + midiToOctave(midi);
+  const noteName = (letter, octave, sharp) => letter + (sharp ? "♯" : "") + octave;
+  const noteKey = (letter, octave) => letter + octave;
+
+  function t(key, vars = {}) {
+    const dict = I18N[state.lang] || I18N.en;
+    let text = dict[key] ?? I18N.en[key] ?? key;
+    return String(text).replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? "");
+  }
+
+  function clefLabel(clef) {
+    return (CLEF_LABELS[clef] || CLEF_LABELS.treble)[state.lang] || CLEF_LABELS[clef].en;
+  }
+
+  function noteCountLabel(n) {
+    return t(n === 1 ? "noteCountOne" : "noteCountMany", { n });
+  }
+
+  function parseNatural(name) {
+    return { letter: name[0], octave: Number(name.slice(1)) };
+  }
+
+  function pitchFromMidi(midi) {
+    const pc = midiToPc(midi);
+    const base = SHARP_NAMES[pc];
+    const letter = base[0];
+    const octave = midiToOctave(midi);
+    return {
+      letter,
+      octave,
+      sharp: base.includes("♯"),
+      diatonic: diatonic(letter, octave),
+      midi,
+      name: midiToName(midi)
+    };
+  }
+
+  function isBlack(midi) {
+    return !WHITE_PCS.has(midiToPc(midi));
+  }
+
+  function describePianoKey(midi) {
+    const name = midiToName(midi);
+    const pc = midiToPc(midi);
+    if (pc === 0 && midi === 60) return t("keyWhiteCentralC", { name });
+    if (isBlack(midi)) {
+      return t("keyBlackBetween", { name, left: BLACK_LEFT_LETTER[pc], right: BLACK_RIGHT_LETTER[pc] });
+    }
+    return pc === 0 ? t("keyWhiteGroupC", { name }) : t("keyWhite", { name });
+  }
+
+  /* ============================================================
+     App state
+     ============================================================ */
+
+  const LANGUAGE_KEY = "pianoread-language";
+  const LANGUAGE_MODES = new Set(["auto", "zh", "en"]);
+  const I18N = {
+    zh: {
+      pageTitle: "谱读 · 五线谱识谱练习",
+      metaDescription: "为钢琴初学者设计的五线谱识谱练习：自由选择音区、谱号、升号调号，在模拟钢琴上作答，按错时显示错音、正确音和正确琴键。",
+      brand: "谱读", brandHome: "谱读首页", statsAria: "本次练习统计",
+      statCorrect: "答对", statAccuracy: "正确率", statStreak: "连对",
+      sound: "音效", soundOnAria: "关闭音效", soundOffAria: "开启音效", settings: "练习设置",
+      controlsAria: "练习设置", clefLabel: "谱号", chooseClefAria: "选择谱号",
+      clefTreble: "高音谱", clefBass: "低音谱", clefGrand: "大谱表",
+      rangeLabel: "音区", rangeLowAria: "最低音", rangeHighAria: "最高音", to: "至",
+      keyLabel: "调号", keySelectAria: "选择升号调号", quickRangeAria: "快速音区", quick: "快速",
+      presetFive: "五音", presetOctave: "一个八度", presetStaff: "谱表内",
+      questionPrefix: "第", questionSuffix: "题", staffInstruction: "读出这个音，点击下方对应的琴键",
+      tipLabel: "识谱小贴士", youPlayed: "你按的", correctNote: "正确音",
+      reveal: "看答案", next: "下一题", continue: "继续",
+      pianoAria: "模拟钢琴键盘", pianoTitle: "模拟钢琴",
+      legendCorrect: "正确键", legendWrong: "按错键", keyNames: "琴键音名", keyboardAria: "钢琴键盘",
+      scrollHint: "← 左右滑动查看完整琴键 →",
+      settingsTitle: "练习设置", closeSettings: "关闭设置", appearance: "界面风格", themeAria: "界面风格",
+      themeWarm: "当前", themeWhite: "白色", themeDark: "黑色",
+      languageHeading: "语言", languageAria: "语言", langAuto: "自动",
+      showKeyNames: "琴键音名", showKeyNamesHint: "在琴键上标出音名，便于初学",
+      autoNext: "答对自动下一题", autoNextHint: "留出 1 秒看反馈",
+      soundSetting: "练习音效", soundHint: "按下琴键时的钢琴声", reset: "重新开始本次练习",
+      clefStaffTreble: "高音谱表", clefStaffBass: "低音谱表", clefStaffGrand: "大谱表",
+      staffAria: "{clef}，请读出谱面上的音",
+      feedbackIdleKicker: "准备好就开始", feedbackIdleTitle: "读出这个音",
+      feedbackIdleLine1: "在下方钢琴上弹出对应的琴键。", feedbackIdleLine2: "升号调也要记得按黑键。",
+      tipTreble: "高音谱表：五条线从下往上是 E4 · G4 · B4 · D5 · F5。先数清音的位置，再找琴键。",
+      tipBass: "低音谱表：五条线从下往上是 G2 · B2 · D3 · F3 · A3。低音听起来更沉一些。",
+      tipGrand: "大谱表：高低音谱表之间留出较宽的距离。中央 C 可以写在低音谱表上方，或高音谱表下方的一条短加线上。",
+      correctKickerFirst: "音读对了", correctKickerCorrected: "这次弹对了",
+      correctTitle: "答对了！<span class=\"accent\">{note}</span>",
+      correctTextFirst: "正确琴键已经用绿色标出{streak}。",
+      correctTextCorrected: "刚才按的是 {wrong}，绿色琴键是正确答案。",
+      streakText: " · 连对 {n} 题",
+      wrongKicker: "还差一点",
+      wrongTitle: "正确音是 <span class=\"accent\">{note}</span>",
+      wrongText: "你按下的是 {wrong}。绿色标记的琴键才是正确答案。",
+      wrongTextSame: "再试一次，注意谱号和调号。",
+      keyLocation: "正确琴键：<strong>{desc}</strong>",
+      keyLocationExtra: "（键盘上的 {name} 键）",
+      revealKicker: "答案已显示",
+      revealTitle: "这个音是 <span class=\"accent\">{note}</span>",
+      revealText: "绿色琴键已经在下方标出，记住它在五线谱上的位置。",
+      playedTag: "你按的 {note}", flagCorrect: "正确", flagWrong: "按错",
+      ariaWhiteKey: "{name} 白键", ariaBlackKey: "{name} 黑键",
+      keyWhiteCentralC: "{name} 白键 · 中央 C",
+      keyBlackBetween: "{name} 黑键 · 位于 {left} 与 {right} 之间",
+      keyWhiteGroupC: "{name} 白键 · 该组的 C", keyWhite: "{name} 白键",
+      streakTitle: "本次最长连对 {n} 题",
+      toastRangeOrder: "已调整音区顺序", toastLabelsHidden: "已隐藏琴键音名",
+      toastSoundOn: "音效已开启", toastRestart: "练习已重新开始",
+      noteCountOne: "{n} 个音", noteCountMany: "{n} 个音",
+      keyMetaTitleNoSharps: "{name}没有升号",
+      keyMetaTitleSharps: "{name}：{list} 需要升半音",
+      keySelectNoSharps: "无升号"
+    },
+    en: {
+      pageTitle: "Sight Reading Practice",
+      metaDescription: "A staff-reading practice app for piano beginners: choose the range, clef, and sharp key, then play the matching key. Mistakes show the wrong note, the correct note, and the correct key.",
+      brand: "Sight Reading", brandHome: "Sight Reading home", statsAria: "Practice statistics",
+      statCorrect: "Correct", statAccuracy: "Accuracy", statStreak: "Streak",
+      sound: "Sound", soundOnAria: "Turn sound off", soundOffAria: "Turn sound on", settings: "Practice settings",
+      controlsAria: "Practice controls", clefLabel: "Clef", chooseClefAria: "Choose clef",
+      clefTreble: "Treble", clefBass: "Bass", clefGrand: "Grand",
+      rangeLabel: "Range", rangeLowAria: "Lowest note", rangeHighAria: "Highest note", to: "to",
+      keyLabel: "Key", keySelectAria: "Choose a sharp key", quickRangeAria: "Quick ranges", quick: "Quick",
+      presetFive: "5 notes", presetOctave: "One octave", presetStaff: "Full staff",
+      questionPrefix: "Question", questionSuffix: "", staffInstruction: "Read the note, then play the matching key below",
+      tipLabel: "Sight-reading tip", youPlayed: "You played", correctNote: "Correct note",
+      reveal: "Show answer", next: "Next", continue: "Continue",
+      pianoAria: "Piano keyboard", pianoTitle: "Piano",
+      legendCorrect: "Correct key", legendWrong: "Wrong key", keyNames: "Key names", keyboardAria: "Piano keys",
+      scrollHint: "← Scroll to see all keys →",
+      settingsTitle: "Practice settings", closeSettings: "Close settings", appearance: "Appearance", themeAria: "Color theme",
+      themeWarm: "Warm", themeWhite: "White", themeDark: "Black",
+      languageHeading: "Language", languageAria: "Language", langAuto: "Auto",
+      showKeyNames: "Show key names", showKeyNamesHint: "Show note names on the keys",
+      autoNext: "Auto next when correct", autoNextHint: "Show feedback for 1 second",
+      soundSetting: "Key sound", soundHint: "Piano note on each key press", reset: "Restart practice",
+      clefStaffTreble: "Treble staff", clefStaffBass: "Bass staff", clefStaffGrand: "Grand staff",
+      staffAria: "{clef}. Read the note on the staff.",
+      feedbackIdleKicker: "Ready when you are", feedbackIdleTitle: "Read this note",
+      feedbackIdleLine1: "Play the matching key on the piano below.", feedbackIdleLine2: "Remember to use black keys in sharp keys.",
+      tipTreble: "Treble staff: the five lines from bottom to top are E4 · G4 · B4 · D5 · F5. Count the position first, then find the key.",
+      tipBass: "Bass staff: the five lines from bottom to top are G2 · B2 · D3 · F3 · A3. The bass sounds lower.",
+      tipGrand: "Grand staff: leave a wide gap between the staves. Middle C can sit on the first ledger line above the bass staff or below the treble staff.",
+      correctKickerFirst: "Note read correctly", correctKickerCorrected: "That is the one",
+      correctTitle: "Correct! <span class=\"accent\">{note}</span>",
+      correctTextFirst: "The correct key is highlighted in green{streak}.",
+      correctTextCorrected: "You played {wrong}. The green key is the correct answer.",
+      streakText: " · {n} in a row",
+      wrongKicker: "Not quite",
+      wrongTitle: "The correct note is <span class=\"accent\">{note}</span>",
+      wrongText: "You played {wrong}. The green key is the correct answer.",
+      wrongTextSame: "Try again and check the clef and key signature.",
+      keyLocation: "Correct key: <strong>{desc}</strong>",
+      keyLocationExtra: " (keyboard key {name})",
+      revealKicker: "Answer shown",
+      revealTitle: "This note is <span class=\"accent\">{note}</span>",
+      revealText: "The green key is highlighted below. Remember its position on the staff.",
+      playedTag: "Played {note}", flagCorrect: "✓", flagWrong: "✗",
+      ariaWhiteKey: "{name} white key", ariaBlackKey: "{name} black key",
+      keyWhiteCentralC: "{name} white key · middle C",
+      keyBlackBetween: "{name} black key · between {left} and {right}",
+      keyWhiteGroupC: "{name} white key · C of this octave", keyWhite: "{name} white key",
+      streakTitle: "Best streak: {n}",
+      toastRangeOrder: "Range order adjusted", toastLabelsHidden: "Key names hidden",
+      toastSoundOn: "Sound on", toastRestart: "Practice restarted",
+      noteCountOne: "{n} note", noteCountMany: "{n} notes",
+      keyMetaTitleNoSharps: "{name} has no sharps",
+      keyMetaTitleSharps: "{name}: sharpen {list}",
+      keySelectNoSharps: "No sharps"
+    }
+  };
+
+  function detectBrowserLanguage() {
+    try {
+      const primary = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+      return /^zh/i.test(primary) ? "zh" : "en";
+    } catch (e) {
+      return "en";
+    }
+  }
+
+  function readLanguageMode() {
+    try {
+      const stored = localStorage.getItem(LANGUAGE_KEY);
+      if (LANGUAGE_MODES.has(stored)) return stored;
+    } catch (e) {}
+    return "auto";
+  }
+
+  const initialLanguageMode = readLanguageMode();
+  const initialLanguage = initialLanguageMode === "auto" ? detectBrowserLanguage() : initialLanguageMode;
+
+  const AUTO_NEXT_MS = 1000;
+  const THEMES = new Set(["warm", "white", "dark"]);
+  const THEME_COLORS = { warm: "#f3eee4", white: "#f6f7f4", dark: "#0f1210" };
+
+  const state = {
+    theme: document.documentElement.dataset.theme || "warm",
+    languageMode: initialLanguageMode,
+    lang: initialLanguage,
+    clef: "treble",
+    ranges: {
+      treble: { ...DEFAULT_RANGES.treble },
+      bass: { ...DEFAULT_RANGES.bass },
+      grand: { ...DEFAULT_RANGES.grand }
+    },
+    keySig: 0,
+    current: null,
+    status: "idle", // idle | asking | correct | wrong | revealed
+    counted: false,
+    attempts: 0,
+    questionNo: 0,
+    answered: 0,
+    correctFirst: 0,
+    streak: 0,
+    bestStreak: 0,
+    showLabels: true,
+    soundOn: true,
+    autoNext: true,
+    autoNextTimer: null,
+    lastQuestionKey: null,
+    pendingCorrect: false
+  };
+
+  const els = {};
+  const cacheEls = () => {
+    [
+      "staffHost", "staffCard", "questionNumber", "clefMeta", "rangeMeta", "keyMeta",
+      "staffInstruction", "feedbackCard", "feedbackIcon", "feedbackKicker", "feedbackTitle",
+      "feedbackText", "feedbackDetails", "feedbackTip", "feedbackTipText", "wrongNotePill", "correctNotePill", "keyLocation",
+      "revealBtn", "nextBtn", "keyboard", "keyboardScroll", "keyboardRange", "scrollHint",
+      "clefSegment", "lowSelect", "highSelect", "keySelect", "statCorrect", "statAccuracy",
+      "statStreak", "soundBtn", "soundOnIcon", "soundOffIcon", "settingsBtn", "settingsPopover",
+      "settingsClose", "labelsToggle", "autoNextToggle", "soundToggle", "resetBtn", "labelsBtn",
+      "themePicker", "langPicker", "toast"
+    ].forEach(id => { els[id] = document.getElementById(id); });
+  };
+
+  /* ============================================================
+     Audio — small synthesized piano
+     ============================================================ */
+  const audio = {
+    ctx: null,
+    master: null,
+    ensure() {
+      if (!state.soundOn) return null;
+      try {
+        if (!this.ctx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return null;
+          this.ctx = new Ctx();
+          this.master = this.ctx.createGain();
+          this.master.gain.value = 0.52;
+          this.master.connect(this.ctx.destination);
+        }
+        if (this.ctx.state === "suspended") this.ctx.resume();
+        return this.ctx;
+      } catch (err) {
+        return null;
+      }
+    },
+    playNote(midi, velocity = 0.78) {
+      const ctx = this.ensure();
+      if (!ctx) return;
+      const now = ctx.currentTime + 0.008;
+      const freq = 440 * Math.pow(2, (midi - 69) / 12);
+      const out = ctx.createGain();
+      out.connect(this.master);
+      const duration = 2.7;
+      out.gain.setValueAtTime(0.0001, now);
+      out.gain.exponentialRampToValueAtTime(0.2 * velocity, now + 0.006);
+      out.gain.exponentialRampToValueAtTime(0.095 * velocity, now + 0.14);
+      out.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(6500, now);
+      filter.frequency.exponentialRampToValueAtTime(1700, now + duration * 0.7);
+      filter.Q.value = 0.5;
+      filter.connect(out);
+
+      const partials = [
+        { ratio: 1, gain: 0.5, type: "triangle", detune: -2 },
+        { ratio: 1, gain: 0.22, type: "sine", detune: 3 },
+        { ratio: 2, gain: 0.18, type: "sine", detune: 1 },
+        { ratio: 3, gain: 0.08, type: "sine", detune: -3 },
+        { ratio: 4.01, gain: 0.045, type: "sine", detune: 2 }
+      ];
+      partials.forEach(p => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = p.type;
+        osc.frequency.setValueAtTime(freq * p.ratio, now);
+        osc.detune.setValueAtTime(p.detune, now);
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(p.gain * velocity, now + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + duration * (p.ratio > 2 ? 0.45 : 0.9));
+        osc.connect(g);
+        g.connect(filter);
+        osc.start(now);
+        osc.stop(now + duration + 0.05);
+      });
+    }
+  };
+
+  /* ============================================================
+     Range and question helpers
+     ============================================================ */
+  function currentRange() {
+    return state.ranges[state.clef];
+  }
+
+  function allNaturalNotesInRange() {
+    const { low, high } = currentRange();
+    const lo = parseNatural(low);
+    const hi = parseNatural(high);
+    const loD = diatonic(lo.letter, lo.octave);
+    const hiD = diatonic(hi.letter, hi.octave);
+    const notes = [];
+    for (let octave = 1; octave <= 8; octave++) {
+      for (const letter of LETTERS) {
+        const d = diatonic(letter, octave);
+        if (d >= loD && d <= hiD) notes.push({ letter, octave, diatonic: d });
+      }
+    }
+    return notes;
+  }
+
+  function sharpenForLetter(letter) {
+    return state.keySig > 0 && SHARP_ORDER.slice(0, state.keySig).includes(letter);
+  }
+
+  function pitchForSpelling(letter, octave) {
+    const sharp = sharpenForLetter(letter);
+    return {
+      letter,
+      octave,
+      sharp,
+      diatonic: diatonic(letter, octave),
+      midi: naturalMidi(letter, octave) + (sharp ? 1 : 0),
+      name: noteName(letter, octave, sharp)
+    };
+  }
+
+  function makeQuestion() {
+    const options = allNaturalNotesInRange();
+    let chosen;
+    let guard = 0;
+    do {
+      chosen = options[Math.floor(Math.random() * options.length)];
+      guard++;
+    } while (options.length > 1 && state.current && chosen.letter === state.current.letter &&
+             chosen.octave === state.current.octave && guard < 30);
+    const pitch = pitchForSpelling(chosen.letter, chosen.octave);
+    let noteStaff = state.clef;
+    if (state.clef === "grand") {
+      noteStaff = diatonic(chosen.letter, chosen.octave) >= diatonic("C", 4) ? "treble" : "bass";
+    }
+    return {
+      ...pitch,
+      staff: noteStaff,
+      keyString: noteKey(chosen.letter, chosen.octave)
+    };
+  }
+
+  function keySignatureInfo() {
+    return KEY_SIGNATURES[state.keySig];
+  }
+
+  function keyboardMidiBounds() {
+    const notes = allNaturalNotesInRange().map(n => pitchForSpelling(n.letter, n.octave));
+    if (!notes.length) return { min: 60, max: 71 };
+    let min = Infinity;
+    let max = -Infinity;
+    notes.forEach(n => { min = Math.min(min, n.midi); max = Math.max(max, n.midi); });
+    const startOct = midiToOctave(min);
+    const endOct = midiToOctave(max);
+    return { min: (startOct + 1) * 12, max: (endOct + 2) * 12 - 1 };
+  }
+
+  /* ============================================================
+     Staff rendering
+     ============================================================ */
+  function staffPositionY(noteStaff, d, topLineY, gap = 12) {
+    const topLine = CLEF_KEY[noteStaff];
+    return topLineY - (d - topLine) * (gap / 2);
+  }
+
+  function buildStaffSvg() {
+    const compact = window.matchMedia("(max-width: 760px)").matches;
+    const gap = compact ? 15 : 12;
+    const W = compact ? 560 : 800;
+    const unit = gap / 12;
+    const isGrand = state.clef === "grand";
+    const notes = allNaturalNotesInRange();
+    const noteXs = compact ? Math.round(W * 0.65) : 548;
+    const lineStart = isGrand ? (compact ? 30 : 36) : (compact ? 22 : 28);
+    const lineEnd = W - (compact ? 20 : 28);
+    let topY = isGrand ? (compact ? 54 : 56) : (compact ? 60 : 70);
+
+    const all = notes.map(n => pitchForSpelling(n.letter, n.octave));
+    const wrong = (state.lastWrongMidi != null && (state.status === "wrong" || state.status === "correct"))
+      ? pitchFromMidi(state.lastWrongMidi)
+      : null;
+    const staffTopFor = (staffKey) => {
+      if (!isGrand) return topY;
+      return staffKey === "bass" ? topY + 8 * gap : topY;
+    };
+    const staffForPitch = (p) => (isGrand
+      ? (p.diatonic >= diatonic("C", 4) ? "treble" : "bass")
+      : state.clef);
+    const extentPitches = wrong ? [...all, wrong] : all;
+    let highestAbove = 0;
+    let lowestBelow = 0;
+    for (const p of extentPitches) {
+      const ns = staffForPitch(p);
+      const refTop = staffTopFor(ns);
+      const y = staffPositionY(ns, p.diatonic, refTop, gap);
+      highestAbove = Math.max(highestAbove, refTop - y);
+      const staffBottom = refTop + 4 * gap;
+      lowestBelow = Math.max(lowestBelow, y - staffBottom);
+    }
+    // Pull the whole system down if high notes need ledger room.
+    const topNeeded = Math.max(0, highestAbove - gap * 2.8);
+    topY += topNeeded;
+    const extraBottom = Math.max(0, lowestBelow - gap * 3.1);
+    const baseHeight = isGrand ? (compact ? 278 : 248) : (compact ? 182 : 208);
+    const H = baseHeight + topNeeded + extraBottom;
+
+    const trebleTop = topY;
+    const trebleBottom = topY + 4 * gap;
+    const bassTop = topY + 8 * gap;
+    const bassBottom = topY + 12 * gap;
+    const midY = (trebleBottom + bassTop) / 2;
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">`;
+
+    // subtle vertical guide behind the note
+    svg += `<line class="staff-guide" x1="${noteXs}" y1="${trebleTop - 35 * unit}" x2="${noteXs}" y2="${(isGrand ? bassBottom : trebleBottom) + 35 * unit}" />`;
+
+    // staff lines
+    const staffTops = isGrand ? [trebleTop, bassTop] : [trebleTop];
+    for (const st of staffTops) {
+      for (let i = 0; i < 5; i++) {
+        svg += `<line class="staff-lines" x1="${lineStart}" y1="${st + i * gap}" x2="${lineEnd}" y2="${st + i * gap}" />`;
+      }
+      svg += `<line class="staff-bar" x1="${lineStart}" y1="${st}" x2="${lineStart}" y2="${st + 4 * gap}" />`;
+      svg += `<line class="staff-bar" x1="${lineEnd}" y1="${st}" x2="${lineEnd}" y2="${st + 4 * gap}" />`;
+    }
+
+    if (isGrand) {
+      // curly grand-staff brace
+      const braceX = compact ? 24 : 28;
+      svg += `<path class="staff-brace" d="M ${braceX} ${trebleTop} C ${braceX - 10} ${trebleTop + 8}, ${braceX - 10} ${midY - 16}, ${braceX - 4} ${midY - 4} C ${braceX - 10} ${midY + 16}, ${braceX - 10} ${bassBottom - 8}, ${braceX} ${bassBottom}" />`;
+      svg += `<line class="staff-bar" x1="${braceX + 4}" y1="${trebleTop}" x2="${braceX + 4}" y2="${bassBottom}" />`;
+    }
+
+    // clefs
+    const clefX = isGrand ? (compact ? 36 : 41) : (compact ? 28 : 33);
+    if (state.clef === "treble" || isGrand) {
+      const fs = gap * 3.75;
+      svg += `<text class="staff-clef" x="${clefX}" y="${trebleTop + 3 * gap + fs * 0.219}" font-family="Noto Music" font-size="${fs}">𝄞</text>`;
+    }
+    if (isGrand) {
+      const fs = gap * 4.55;
+      svg += `<text class="staff-clef" x="${clefX + 1}" y="${bassTop + fs * 0.88}" font-family="Noto Music" font-size="${fs}">𝄢</text>`;
+    } else if (state.clef === "bass") {
+      const fs = gap * 4.55;
+      svg += `<text class="staff-clef" x="${clefX + 1}" y="${trebleTop + fs * 0.88}" font-family="Noto Music" font-size="${fs}">𝄢</text>`;
+    }
+
+    // key signatures
+    const ks = state.keySig;
+    if (ks > 0) {
+      const sigX = clefX + (isGrand || state.clef === "treble" ? gap * 5.6 : gap * 5.2);
+      const drawSig = (staffKey, top) => {
+        const positions = SHARP_STAFF_POSITIONS[staffKey].slice(0, ks);
+        positions.forEach((p, idx) => {
+          const y = staffPositionY(staffKey, diatonic(p.letter, p.octave), top, gap);
+          svg += `<text class="staff-sharp" x="${sigX + idx * gap * 1.35}" y="${y + 4.1 * unit}" font-family="Noto Music" font-size="${gap * 2.15}">♯</text>`;
+        });
+      };
+      if (isGrand) {
+        drawSig("treble", trebleTop);
+        drawSig("bass", bassTop);
+      } else {
+        drawSig(state.clef, trebleTop);
+      }
+    }
+
+    // reusable ledger lines: correct pitch mapping, on either side of the staff
+    const drawLedgerLines = (ns, staffTop, d, x, colorClass) => {
+      const bottomLineDia = CLEF_KEY[ns] - 8;
+      const offset = d - bottomLineDia;
+      let out = "";
+      if (offset > 8) {
+        for (let o = 10; o <= offset; o += 2) {
+          const ly = staffTop + (8 - o) * gap / 2;
+          out += `<line class="${colorClass}" x1="${x - 16 * unit}" y1="${ly}" x2="${x + 16 * unit}" y2="${ly}" />`;
+        }
+      }
+      if (offset < 0) {
+        for (let o = -2; o >= offset; o -= 2) {
+          const ly = staffTop + (8 - o) * gap / 2;
+          out += `<line class="${colorClass}" x1="${x - 16 * unit}" y1="${ly}" x2="${x + 16 * unit}" y2="${ly}" />`;
+        }
+      }
+      return out;
+    };
+
+    const drawNoteGlyph = (ns, staffTop, d, x, isWrong) => {
+      const y = staffPositionY(ns, d, staffTop, gap);
+      const prefix = isWrong ? "staff-wrong" : "staff";
+      let out = drawLedgerLines(ns, staffTop, d, x, isWrong ? "staff-wrong-ledger" : "staff-ledger");
+      const stemUp = y >= staffTop + gap * 2;
+      const sx = x + (stemUp ? 8.2 * unit : -8.2 * unit);
+      const sy = stemUp ? y - 36 * unit : y + 36 * unit;
+      out += `<g class="${isWrong ? "wrong-note-group" : "question-note"}">`;
+      out += `<line class="${prefix}-note-stem" x1="${sx}" y1="${y}" x2="${sx}" y2="${sy}" />`;
+      out += `<ellipse class="${prefix}-note" cx="${x}" cy="${y}" rx="${8.3 * unit}" ry="${6.1 * unit}" transform="rotate(-21 ${x} ${y})" />`;
+      out += `</g>`;
+      return { svg: out, y };
+    };
+
+    const textUnits = (text) => [...text].reduce((sum, ch) =>
+      sum + (/[\u3400-\u9fff]/.test(ch) ? 1 : 0.62), 0);
+
+    const drawTag = (text, anchorX, noteY, isWrong, align = "left") => {
+      const fontSize = 12.5 * unit;
+      const tagH = 23 * unit;
+      const tagW = Math.max(40 * unit, textUnits(text) * fontSize + 14 * unit);
+      let tagX = align === "right" ? anchorX - tagW : anchorX;
+      tagX = Math.max(4 * unit, Math.min(W - tagW - 4 * unit, tagX));
+      // Prefer above the note; drop below only when a high ledger note has no room.
+      let tagY = noteY - tagH - 10 * unit;
+      if (tagY < 4 * unit) tagY = noteY + 12 * unit;
+      tagY = Math.max(4 * unit, Math.min(H - tagH - 4 * unit, tagY));
+      return `<g class="${isWrong ? "wrong-answer-tag" : "answer-tag"}"><rect x="${tagX}" y="${tagY}" width="${tagW}" height="${tagH}" rx="${7 * unit}"/><text x="${tagX + tagW / 2}" y="${tagY + 16 * unit}" text-anchor="middle" font-size="${fontSize}">${text}</text></g>`;
+    };
+
+    const wrongAccidentalFor = (p) => {
+      const keySharp = sharpenForLetter(p.letter);
+      if (p.sharp && !keySharp) return "♯";
+      if (!p.sharp && keySharp) return "♮";
+      return "";
+    };
+
+    let wrongX = null;
+    let wrongY = null;
+    if (wrong) {
+      const wns = staffForPitch(wrong);
+      const wtop = staffTopFor(wns);
+      wrongX = noteXs - 44 * unit;
+      const drawnWrong = drawNoteGlyph(wns, wtop, wrong.diatonic, wrongX, true);
+      wrongY = drawnWrong.y;
+      const accidental = wrongAccidentalFor(wrong);
+      if (accidental) {
+        svg += `<text class="staff-wrong-accidental" x="${wrongX - 23 * unit}" y="${wrongY + 4.1 * unit}" font-family="Noto Music" font-size="${gap * 2.15}">${accidental}</text>`;
+      }
+      svg += drawnWrong.svg;
+    }
+
+    // question note
+    if (state.current) {
+      const q = state.current;
+      const ns = q.staff;
+      const staffTop = staffTopFor(ns);
+      const noteX = noteXs;
+      const y = staffPositionY(ns, q.diatonic, staffTop, gap);
+
+      if (state.status === "asking" || state.status === "idle") {
+        svg += `<ellipse class="staff-note-halo" cx="${noteX}" cy="${y}" rx="${25 * unit}" ry="${20 * unit}" />`;
+      }
+
+      const drawn = drawNoteGlyph(ns, staffTop, q.diatonic, noteX, false);
+      svg += drawn.svg;
+
+      if (["correct", "wrong", "revealed"].includes(state.status)) {
+        if (wrong && wrongX != null) {
+          svg += drawTag(t("playedTag", { note: wrong.name }), wrongX - 20 * unit, wrongY, true, "right");
+        }
+        svg += drawTag(q.name, noteX + 24 * unit, y, false, "left");
+      }
+    }
+    svg += `</svg>`;
+    return svg;
+  }
+
+  function renderStaff() {
+    els.staffHost.innerHTML = buildStaffSvg();
+    els.staffHost.setAttribute("aria-label", t("staffAria", { clef: clefLabel(state.clef) }));
+    if (state.current) {
+      els.staffHost.dataset.answer = state.current.name;
+      els.staffHost.dataset.midi = String(state.current.midi);
+      const showWrong = state.lastWrongMidi != null && (state.status === "wrong" || state.status === "correct");
+      els.staffHost.dataset.wrong = showWrong ? midiToName(state.lastWrongMidi) : "";
+    }
+  }
+
+  /* ============================================================
+     Keyboard
+     ============================================================ */
+  function renderKeyboard() {
+    const bounds = keyboardMidiBounds();
+    const startMidi = bounds.min;
+    const endMidi = bounds.max;
+    const startOct = midiToOctave(startMidi);
+    const endOct = midiToOctave(endMidi);
+    const whiteMidis = [];
+    for (let midi = startMidi; midi <= endMidi; midi++) {
+      if (!isBlack(midi)) whiteMidis.push(midi);
+    }
+    const whiteCount = whiteMidis.length;
+    const whiteIndexByMidi = new Map();
+    whiteMidis.forEach((m, i) => whiteIndexByMidi.set(m, i));
+
+    const keyboard = els.keyboard;
+    keyboard.innerHTML = "";
+    keyboard.classList.toggle("labels-off", !state.showLabels);
+    keyboard.style.gap = "0";
+    const minWidth = Math.max(300, whiteCount * 31);
+    keyboard.style.minWidth = `${minWidth}px`;
+
+    // White keys
+    const whiteKeys = [];
+    whiteMidis.forEach((midi, idx) => {
+      const key = document.createElement("button");
+      key.type = "button";
+      key.className = "piano-key white-key" + (midiToPc(midi) === 0 ? " is-c" : "");
+      key.dataset.midi = String(midi);
+      key.dataset.type = "white";
+      key.setAttribute("aria-label", t("ariaWhiteKey", { name: midiToName(midi) }));
+      const label = document.createElement("span");
+      label.className = "key-name";
+      label.textContent = midiToName(midi);
+      key.appendChild(label);
+      key.addEventListener("click", () => pressPianoKey(midi, key));
+      keyboard.appendChild(key);
+      whiteKeys.push(key);
+    });
+
+    // Black keys, absolutely positioned on the boundary after a white key.
+    for (let midi = startMidi; midi <= endMidi; midi++) {
+      if (!isBlack(midi)) continue;
+      const pc = midiToPc(midi);
+      // black key belongs above the boundary between the white key just below and next one
+      const boundaryWhiteIndex = whiteIndexByMidi.get(midi - 1) ?? whiteIndexByMidi.get(midi);
+      if (boundaryWhiteIndex === undefined) continue;
+      const key = document.createElement("button");
+      key.type = "button";
+      key.className = "piano-key black-key";
+      key.dataset.midi = String(midi);
+      key.dataset.type = "black";
+      key.setAttribute("aria-label", t("ariaBlackKey", { name: midiToName(midi) }));
+      const offset = BLACK_OFFSET[pc] || 0.5;
+      key.style.width = `calc((100% / ${whiteCount}) * 0.62)`;
+      key.style.left = `calc((100% / ${whiteCount}) * ${boundaryWhiteIndex + 1} - (100% / ${whiteCount}) * 0.62 * ${offset})`;
+      const label = document.createElement("span");
+      label.className = "key-name";
+      label.textContent = midiToName(midi);
+      key.appendChild(label);
+      key.addEventListener("click", () => pressPianoKey(midi, key));
+      keyboard.appendChild(key);
+    }
+
+    const rangeText = whiteCount
+      ? `${midiToName(whiteMidis[0])} – ${midiToName(whiteMidis[whiteMidis.length - 1])}`
+      : "—";
+    els.keyboardRange.textContent = rangeText;
+    els.keyboardScroll.classList.toggle("is-scrollable", keyboard.scrollWidth > els.keyboardScroll.clientWidth + 4);
+    // ensure labels state after rebuilding
+    applyLabelState();
+    window.requestAnimationFrame(() => {
+      els.keyboardScroll.classList.toggle("is-scrollable", keyboard.scrollWidth > els.keyboardScroll.clientWidth + 4);
+    });
+  }
+
+  function applyLabelState() {
+    els.keyboard.classList.toggle("labels-off", !state.showLabels);
+    els.labelsBtn.setAttribute("aria-pressed", String(state.showLabels));
+    els.labelsToggle.checked = state.showLabels;
+  }
+
+  function clearKeyHighlights() {
+    els.keyboard.querySelectorAll(".is-correct, .is-wrong, .pressed").forEach(k => {
+      k.classList.remove("is-correct", "is-wrong", "pressed");
+    });
+    els.keyboard.querySelectorAll(".key-flag").forEach(f => f.remove());
+  }
+
+  function addFlag(key, text, type) {
+    const flag = document.createElement("span");
+    flag.className = `key-flag ${type}`;
+    flag.textContent = text;
+    key.appendChild(flag);
+  }
+
+  function highlightKey(midi, type) {
+    const key = els.keyboard.querySelector(`[data-midi="${midi}"]`);
+    if (!key) return null;
+    key.classList.add(type === "correct" ? "is-correct" : "is-wrong");
+    addFlag(key, type === "correct" ? t("flagCorrect") : t("flagWrong"), type);
+    return key;
+  }
+
+  function scrollKeyIntoView(midi) {
+    const key = els.keyboard.querySelector(`[data-midi="${midi}"]`);
+    if (!key) return;
+    const scroller = els.keyboardScroll;
+    const keyLeft = key.offsetLeft;
+    const keyWidth = key.offsetWidth;
+    const target = keyLeft + keyWidth / 2 - scroller.clientWidth / 2;
+    scroller.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+  }
+
+  function scrollKeyPairIntoView(a, b) {
+    const keys = [a, b].map(midi => els.keyboard.querySelector(`[data-midi="${midi}"]`)).filter(Boolean);
+    if (!keys.length) return;
+    let left = Infinity, right = -Infinity;
+    keys.forEach(k => { left = Math.min(left, k.offsetLeft); right = Math.max(right, k.offsetLeft + k.offsetWidth); });
+    const scroller = els.keyboardScroll;
+    if (right - left > scroller.clientWidth - 20) {
+      scrollKeyIntoView(b);
+      return;
+    }
+    const center = (left + right) / 2;
+    scroller.scrollTo({ left: Math.max(0, center - scroller.clientWidth / 2), behavior: "smooth" });
+  }
+
+  function centerKeyboardOnRange(behavior = "auto") {
+    const keys = [...els.keyboard.querySelectorAll(".piano-key")];
+    if (!keys.length) return;
+    const left = Math.min(...keys.map(k => k.offsetLeft));
+    const right = Math.max(...keys.map(k => k.offsetLeft + k.offsetWidth));
+    const center = (left + right) / 2;
+    els.keyboardScroll.scrollTo({
+      left: Math.max(0, center - els.keyboardScroll.clientWidth / 2),
+      behavior
+    });
+  }
+
+  /* ============================================================
+     Feedback and scoring
+     ============================================================ */
+  function setFeedbackMode(mode) {
+    els.feedbackCard.classList.remove("is-correct", "is-wrong", "is-revealed");
+    if (mode) els.feedbackCard.classList.add(`is-${mode}`);
+  }
+
+  function updateStats() {
+    els.statCorrect.textContent = String(state.correctFirst);
+    els.statAccuracy.textContent = state.answered ? `${Math.round((state.correctFirst / state.answered) * 100)}%` : "—";
+    els.statStreak.textContent = String(state.streak);
+    els.statStreak.title = t("streakTitle", { n: state.bestStreak });
+  }
+
+  function feedbackIdle() {
+    setFeedbackMode(null);
+    els.feedbackIcon.textContent = "♪";
+    els.feedbackKicker.textContent = t("feedbackIdleKicker");
+    els.feedbackTitle.innerHTML = t("feedbackIdleTitle");
+    els.feedbackText.innerHTML = `${t("feedbackIdleLine1")}<br>${t("feedbackIdleLine2")}`;
+    els.feedbackDetails.hidden = true;
+    els.feedbackTip.hidden = false;
+    updateFeedbackTip();
+    els.revealBtn.hidden = false;
+    els.revealBtn.disabled = false;
+    els.nextBtn.disabled = true;
+    els.nextBtn.textContent = t("next");
+  }
+
+  function updateFeedbackTip() {
+    const tips = { treble: "tipTreble", bass: "tipBass", grand: "tipGrand" };
+    els.feedbackTipText.textContent = t(tips[state.clef]);
+  }
+
+  function feedbackCorrect(corrected) {
+    setFeedbackMode("correct");
+    els.feedbackTip.hidden = true;
+    els.feedbackIcon.textContent = "✓";
+    els.feedbackKicker.textContent = corrected ? t("correctKickerCorrected") : t("correctKickerFirst");
+    els.feedbackTitle.innerHTML = t("correctTitle", { note: state.current.name });
+    const streakText = state.streak > 1 ? t("streakText", { n: state.streak }) : "";
+    els.feedbackText.textContent = corrected
+      ? t("correctTextCorrected", { wrong: state.lastWrongName || "—" })
+      : t("correctTextFirst", { streak: streakText });
+    if (corrected) {
+      els.feedbackDetails.hidden = false;
+      els.wrongNotePill.textContent = state.lastWrongName || "—";
+      els.correctNotePill.textContent = state.current.name;
+      els.keyLocation.innerHTML = t("keyLocation", { desc: describePianoKey(state.current.midi) });
+    } else {
+      els.feedbackDetails.hidden = true;
+    }
+    els.revealBtn.hidden = true;
+    els.nextBtn.disabled = false;
+    els.nextBtn.textContent = state.autoNext ? t("next") : t("continue");
+  }
+
+  function feedbackWrong(wrongMidi) {
+    setFeedbackMode("wrong");
+    els.feedbackTip.hidden = true;
+    els.feedbackIcon.textContent = "×";
+    els.feedbackKicker.textContent = t("wrongKicker");
+    els.feedbackTitle.innerHTML = t("wrongTitle", { note: state.current.name });
+    const sameKey = wrongMidi === state.current.midi;
+    els.feedbackText.textContent = sameKey
+      ? t("wrongTextSame")
+      : t("wrongText", { wrong: midiToName(wrongMidi) });
+    els.feedbackDetails.hidden = false;
+    els.wrongNotePill.textContent = midiToName(wrongMidi);
+    els.correctNotePill.textContent = state.current.name;
+    const extra = (noteNameForMidi(state.current.midi) !== state.current.name)
+      ? t("keyLocationExtra", { name: midiToName(state.current.midi) })
+      : "";
+    els.keyLocation.innerHTML = t("keyLocation", { desc: describePianoKey(state.current.midi) }) + extra;
+    els.revealBtn.hidden = true;
+    els.nextBtn.disabled = false;
+    els.nextBtn.textContent = t("next");
+  }
+
+  function feedbackRevealed() {
+    setFeedbackMode("revealed");
+    els.feedbackTip.hidden = true;
+    els.feedbackIcon.textContent = "♩";
+    els.feedbackKicker.textContent = t("revealKicker");
+    els.feedbackTitle.innerHTML = t("revealTitle", { note: state.current.name });
+    els.feedbackText.textContent = t("revealText");
+    els.feedbackDetails.hidden = false;
+    els.wrongNotePill.parentElement.hidden = true;
+    els.correctNotePill.textContent = state.current.name;
+    els.keyLocation.innerHTML = t("keyLocation", { desc: describePianoKey(state.current.midi) });
+    els.revealBtn.hidden = true;
+    els.nextBtn.disabled = false;
+    els.nextBtn.textContent = t("next");
+  }
+
+  function noteNameForMidi(midi) {
+    return midiToName(midi);
+  }
+
+  function markCounted() {
+    if (!state.counted) {
+      state.counted = true;
+      state.answered++;
+    }
+  }
+
+  /* ============================================================
+     Question flow
+     ============================================================ */
+  function clearAutoNext() {
+    if (state.autoNextTimer) {
+      clearTimeout(state.autoNextTimer);
+      state.autoNextTimer = null;
+    }
+  }
+
+  function scheduleAutoNext() {
+    clearAutoNext();
+    if (!state.autoNext) return;
+    state.autoNextTimer = setTimeout(() => {
+      state.autoNextTimer = null;
+      if (state.status === "correct") newQuestion();
+    }, AUTO_NEXT_MS);
+  }
+
+  function newQuestion({ advance = true } = {}) {
+    clearAutoNext();
+    state.current = makeQuestion();
+    state.lastQuestionKey = state.current.keyString;
+    state.status = "asking";
+    state.counted = false;
+    state.attempts = 0;
+    state.lastWrongMidi = null;
+    state.lastWrongName = null;
+    if (advance) state.questionNo++;
+    clearKeyHighlights();
+    feedbackIdle();
+    els.questionNumber.textContent = String(state.questionNo);
+    els.wrongNotePill.parentElement.hidden = false;
+    els.correctNotePill.parentElement.hidden = false;
+    els.nextBtn.disabled = true;
+    els.revealBtn.hidden = false;
+    els.revealBtn.disabled = false;
+    updateMeta();
+    renderStaff();
+    updateStats();
+    if (state.questionNo === 1) {
+      // bring the whole starting range into view, without narrowing attention to one key
+      window.requestAnimationFrame(() => centerKeyboardOnRange());
+    }
+  }
+
+  function pressPianoKey(midi, keyEl) {
+    if (!state.current) return;
+    if (state.soundOn) audio.playNote(midi);
+    // a short physical press effect
+    keyEl.classList.add("pressed");
+    setTimeout(() => keyEl.classList.remove("pressed"), 110);
+
+    if (!["asking", "wrong"].includes(state.status)) return;
+
+    const correct = midi === state.current.midi;
+    if (correct) {
+      clearAutoNext();
+      const wasWrong = state.status === "wrong";
+      if (!wasWrong) {
+        markCounted();
+        state.correctFirst++;
+        state.streak++;
+        state.bestStreak = Math.max(state.bestStreak, state.streak);
+      } else {
+        // streak was already reset by the wrong attempt
+      }
+      state.status = "correct";
+      clearKeyHighlights();
+      highlightKey(state.current.midi, "correct");
+      if (wasWrong && state.lastWrongMidi != null) highlightKey(state.lastWrongMidi, "wrong");
+      feedbackCorrect(wasWrong);
+      updateStats();
+      scheduleAutoNext();
+    } else {
+      if (state.status === "asking") {
+        markCounted();
+        state.streak = 0;
+      }
+      state.status = "wrong";
+      state.attempts++;
+      state.lastWrongMidi = midi;
+      state.lastWrongName = midiToName(midi);
+      clearKeyHighlights();
+      highlightKey(state.current.midi, "correct");
+      highlightKey(midi, "wrong");
+      feedbackWrong(midi);
+      updateStats();
+      scrollKeyPairIntoView(midi, state.current.midi);
+      // the next button was enabled by feedbackWrong; keep the answer visible
+      clearAutoNext();
+    }
+    renderStaff();
+  }
+
+  function revealAnswer() {
+    if (!state.current || !["asking", "wrong"].includes(state.status)) return;
+    clearAutoNext();
+    markCounted();
+    state.streak = 0;
+    state.status = "revealed";
+    clearKeyHighlights();
+    highlightKey(state.current.midi, "correct");
+    feedbackRevealed();
+    updateStats();
+    renderStaff();
+    scrollKeyIntoView(state.current.midi);
+    if (state.soundOn) audio.playNote(state.current.midi, 0.62);
+  }
+
+  function nextQuestion() {
+    if (state.status === "idle") return;
+    newQuestion();
+  }
+
+  /* ============================================================
+     UI meta, controls, settings
+     ============================================================ */
+  function updateMeta() {
+    const sign = keySignatureInfo();
+    const notes = allNaturalNotesInRange();
+    els.clefMeta.textContent = clefLabel(state.clef);
+    els.rangeMeta.textContent = `${currentRange().low}–${currentRange().high} · ${noteCountLabel(notes.length)}`;
+    els.keyMeta.textContent = `${sign.name[state.lang]} · ${sign.sharps[state.lang]}`;
+    const ks = state.keySig;
+    const list = SHARP_ORDER.slice(0, ks).join(state.lang === "zh" ? "、" : ", ");
+    els.keyMeta.title = ks === 0
+      ? t("keyMetaTitleNoSharps", { name: sign.name[state.lang] })
+      : t("keyMetaTitleSharps", { name: sign.name[state.lang], list });
+  }
+
+  function fillRangeSelects() {
+    const opts = [];
+    for (let octave = 2; octave <= 6; octave++) {
+      for (const letter of LETTERS) opts.push(`${letter}${octave}`);
+    }
+    [els.lowSelect, els.highSelect].forEach(select => {
+      select.innerHTML = opts.map(v => `<option value="${v}">${v}</option>`).join("");
+    });
+  }
+
+  function fillKeySelect() {
+    els.keySelect.innerHTML = KEY_SIGNATURES.map((k, i) =>
+      `<option value="${i}">${k.name[state.lang]} · ${k.count === 0 ? t("keySelectNoSharps") : k.count + "♯"}</option>`
+    ).join("");
+  }
+
+  function syncControls() {
+    const range = currentRange();
+    els.lowSelect.value = range.low;
+    els.highSelect.value = range.high;
+    els.keySelect.value = String(state.keySig);
+    els.clefSegment.querySelectorAll("[data-clef]").forEach(btn => {
+      const active = btn.dataset.clef === state.clef;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function setClef(clef) {
+    if (state.clef === clef) return;
+    clearAutoNext();
+    state.clef = clef;
+    syncControls();
+    renderKeyboard();
+    newQuestion({ advance: false });
+    window.requestAnimationFrame(() => centerKeyboardOnRange("smooth"));
+  }
+
+  function setRange(low, high, { silent = false } = {}) {
+    const lo = parseNatural(low);
+    const hi = parseNatural(high);
+    if (diatonic(lo.letter, lo.octave) > diatonic(hi.letter, hi.octave)) {
+      [low, high] = [high, low];
+    }
+    const range = currentRange();
+    range.low = low;
+    range.high = high;
+    syncControls();
+    renderKeyboard();
+    newQuestion({ advance: false });
+    window.requestAnimationFrame(() => centerKeyboardOnRange("smooth"));
+  }
+
+  function updateRangeFromSelect(changed) {
+    let low = els.lowSelect.value;
+    let high = els.highSelect.value;
+    const lo = parseNatural(low);
+    const hi = parseNatural(high);
+    if (diatonic(lo.letter, lo.octave) > diatonic(hi.letter, hi.octave)) {
+      if (changed === "low") {
+        high = low;
+      } else {
+        low = high;
+      }
+      toast(t("toastRangeOrder"));
+    }
+    setRange(low, high, { silent: true });
+  }
+
+  function setKeySignature(n) {
+    state.keySig = Number(n);
+    syncControls();
+    renderKeyboard();
+    newQuestion({ advance: false });
+    window.requestAnimationFrame(() => centerKeyboardOnRange("smooth"));
+  }
+
+  function applyPreset(name) {
+    let preset = PRESETS[name];
+    if (!preset) return;
+    if (state.clef === "bass") {
+      preset = name === "octave"
+        ? { low: "C2", high: "B2" }
+        : name === "five"
+          ? { low: "C2", high: "G2" }
+          : { low: "C2", high: "C4" };
+    } else if (state.clef === "grand") {
+      preset = name === "octave"
+        ? { low: "C3", high: "B3" }
+        : name === "five"
+          ? { low: "C3", high: "G3" }
+          : { low: "C2", high: "C6" };
+    }
+    setRange(preset.low, preset.high);
+  }
+
+  function toast(message, duration = 1900) {
+    els.toast.textContent = message;
+    els.toast.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => els.toast.classList.remove("show"), duration);
+  }
+
+  function setLabels(on) {
+    state.showLabels = on;
+    applyLabelState();
+    if (!on) toast(t("toastLabelsHidden"));
+  }
+
+  function setSound(on, { notify = true, prime = true } = {}) {
+    state.soundOn = on;
+    els.soundBtn.setAttribute("aria-pressed", String(on));
+    els.soundBtn.setAttribute("aria-label", on ? t("soundOnAria") : t("soundOffAria"));
+    els.soundOnIcon.hidden = !on;
+    els.soundOffIcon.hidden = on;
+    els.soundToggle.checked = on;
+    if (!on) {
+      if (audio.ctx && audio.ctx.state === "running") audio.ctx.suspend().catch(() => {});
+    } else {
+      if (prime) audio.ensure();
+      if (notify) toast(t("toastSoundOn"));
+    }
+  }
+
+  function setAutoNext(on) {
+    state.autoNext = on;
+    els.autoNextToggle.checked = on;
+    if (!on) clearAutoNext();
+  }
+
+  function setTheme(theme, { persist = true } = {}) {
+    if (!THEMES.has(theme)) theme = "warm";
+    state.theme = theme;
+    document.documentElement.dataset.theme = theme;
+    const themeColor = document.getElementById("themeColor");
+    if (themeColor) themeColor.setAttribute("content", THEME_COLORS[theme]);
+    if (els.themePicker) {
+      els.themePicker.querySelectorAll("[data-theme-choice]").forEach(btn => {
+        const active = btn.dataset.themeChoice === theme;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", String(active));
+      });
+    }
+    if (persist) {
+      try { localStorage.setItem("pianoread-theme", theme); } catch (e) {}
+    }
+  }
+
+  function updateLanguageButtons() {
+    if (!els.langPicker) return;
+    els.langPicker.querySelectorAll("[data-lang-choice]").forEach(btn => {
+      const active = btn.dataset.langChoice === state.languageMode;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function applyStaticLanguage() {
+    document.documentElement.lang = state.lang === "zh" ? "zh-CN" : "en";
+    document.title = t("pageTitle");
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", t("metaDescription"));
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+      el.setAttribute("aria-label", t(el.dataset.i18nAria));
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach(el => {
+      el.setAttribute("title", t(el.dataset.i18nTitle));
+    });
+    els.soundBtn.setAttribute("aria-label", state.soundOn ? t("soundOnAria") : t("soundOffAria"));
+    updateLanguageButtons();
+  }
+
+  function refreshFeedbackForLanguage() {
+    if (!state.current) {
+      feedbackIdle();
+      return;
+    }
+    if (state.status === "correct") feedbackCorrect(state.lastWrongMidi != null);
+    else if (state.status === "wrong") feedbackWrong(state.lastWrongMidi);
+    else if (state.status === "revealed") feedbackRevealed();
+    else feedbackIdle();
+  }
+
+  function restoreCurrentHighlights() {
+    if (!state.current) return;
+    if (["correct", "wrong", "revealed"].includes(state.status)) {
+      highlightKey(state.current.midi, "correct");
+      if (state.status !== "revealed" && state.lastWrongMidi != null) {
+        highlightKey(state.lastWrongMidi, "wrong");
+      }
+    }
+  }
+
+  function setLanguageMode(mode, { persist = true, render = true } = {}) {
+    if (!LANGUAGE_MODES.has(mode)) mode = "auto";
+    state.languageMode = mode;
+    state.lang = mode === "auto" ? detectBrowserLanguage() : mode;
+    applyStaticLanguage();
+    fillKeySelect();
+    syncControls();
+    updateMeta();
+    updateStats();
+    if (render && state.current) {
+      const oldScroll = els.keyboardScroll.scrollLeft;
+      renderStaff();
+      renderKeyboard();
+      restoreCurrentHighlights();
+      refreshFeedbackForLanguage();
+      window.requestAnimationFrame(() => { els.keyboardScroll.scrollLeft = oldScroll; });
+    }
+    if (persist) {
+      try { localStorage.setItem(LANGUAGE_KEY, mode); } catch (e) {}
+    }
+  }
+
+  function resetSession() {
+    clearAutoNext();
+    state.questionNo = 0;
+    state.answered = 0;
+    state.correctFirst = 0;
+    state.streak = 0;
+    state.bestStreak = 0;
+    state.current = null;
+    state.status = "idle";
+    state.counted = false;
+    state.lastWrongMidi = null;
+    state.lastWrongName = null;
+    updateStats();
+    closeSettings();
+    renderKeyboard();
+    newQuestion();
+    window.requestAnimationFrame(() => centerKeyboardOnRange("smooth"));
+    toast(t("toastRestart"));
+  }
+
+  function openSettings() {
+    els.settingsPopover.hidden = false;
+    els.settingsBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeSettings() {
+    els.settingsPopover.hidden = true;
+    els.settingsBtn.setAttribute("aria-expanded", "false");
+  }
+  function toggleSettings() {
+    if (els.settingsPopover.hidden) openSettings(); else closeSettings();
+  }
+
+  /* ============================================================
+     Event wiring
+     ============================================================ */
+  function bindEvents() {
+    els.clefSegment.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-clef]");
+      if (btn) setClef(btn.dataset.clef);
+    });
+    els.lowSelect.addEventListener("change", () => updateRangeFromSelect("low"));
+    els.highSelect.addEventListener("change", () => updateRangeFromSelect("high"));
+    els.keySelect.addEventListener("change", () => setKeySignature(els.keySelect.value));
+    document.querySelectorAll(".quick-range [data-preset]").forEach(btn => {
+      btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
+    });
+
+    els.revealBtn.addEventListener("click", revealAnswer);
+    els.nextBtn.addEventListener("click", nextQuestion);
+
+    els.labelsBtn.addEventListener("click", () => setLabels(!state.showLabels));
+    els.labelsToggle.addEventListener("change", () => setLabels(els.labelsToggle.checked));
+    els.autoNextToggle.addEventListener("change", () => setAutoNext(els.autoNextToggle.checked));
+    els.soundToggle.addEventListener("change", () => setSound(els.soundToggle.checked));
+    els.soundBtn.addEventListener("click", () => setSound(!state.soundOn));
+    els.settingsBtn.addEventListener("click", toggleSettings);
+    els.settingsClose.addEventListener("click", closeSettings);
+    els.resetBtn.addEventListener("click", resetSession);
+    els.themePicker.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-theme-choice]");
+      if (btn) setTheme(btn.dataset.themeChoice);
+    });
+    els.langPicker.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-lang-choice]");
+      if (btn) setLanguageMode(btn.dataset.langChoice);
+    });
+    window.addEventListener("languagechange", () => {
+      if (state.languageMode === "auto") setLanguageMode("auto", { persist: false });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (els.settingsPopover.hidden) return;
+      if (els.settingsPopover.contains(e.target) || els.settingsBtn.contains(e.target)) return;
+      closeSettings();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !els.settingsPopover.hidden) closeSettings();
+      if (e.key === "ArrowRight" && !els.settingsPopover.hidden) return;
+      if (e.target && ["INPUT", "SELECT", "TEXTAREA"].includes(e.target.tagName)) return;
+      if (e.key === " " && document.activeElement && document.activeElement.classList.contains("piano-key")) {
+        // let native button activation handle it
+        return;
+      }
+    });
+    let lastCompact = window.matchMedia("(max-width: 760px)").matches;
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+      els.keyboardScroll.classList.toggle("is-scrollable", els.keyboard.scrollWidth > els.keyboardScroll.clientWidth + 4);
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const nowCompact = window.matchMedia("(max-width: 760px)").matches;
+        if (nowCompact !== lastCompact) {
+          lastCompact = nowCompact;
+          renderStaff();
+        }
+      }, 120);
+    });
+  }
+
+  function init() {
+    cacheEls();
+    fillRangeSelects();
+    fillKeySelect();
+    bindEvents();
+    setTheme(state.theme, { persist: false });
+    setLanguageMode(state.languageMode, { persist: false, render: false });
+    setSound(true, { notify: false, prime: false });
+    setLabels(true);
+    syncControls();
+    renderKeyboard();
+    updateStats();
+    newQuestion();
+  }
+
+  init();
+})();
+</script>
+<script type="text/plain" id="font-license" hidden>
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/music)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded,
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+</script>
+</body>
+</html>
