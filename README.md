@@ -10,8 +10,6 @@
 - `dist/piano-sight-reading.html`（分发版）
 - `index.html`（源文件，内容与分发版一致）
 
-手机上也可以使用已复制到下载目录的副本：
-`/sdcard/Download/DSH-Go/piano-sight-reading.html`
 
 ## 目录
 
